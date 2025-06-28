@@ -77,6 +77,11 @@
                         </div>
                     </div>
 
+                    <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
+                            <i class="fas fa-eraser"></i>
+                            <span class="btn-text">Очистить</span>
+                    </button>
+
                     </div>
 
                     <!-- Информационный блок -->

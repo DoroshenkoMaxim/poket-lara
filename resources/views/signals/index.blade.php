@@ -746,7 +746,6 @@
     }
 
     .signal-currency:hover {
-        background: rgba(255, 255, 255, 0.1);
         transform: scale(1.02);
     }
 
@@ -765,27 +764,7 @@
         opacity: 1;
     }
 
-    .signal-currency::before {
-        content: "Нажмите для копирования";
-        position: absolute;
-        bottom: -35px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        white-space: nowrap;
-        opacity: 0;
-        transition: opacity 0.2s ease;
-        pointer-events: none;
-        z-index: 1000;
-    }
 
-    .signal-currency:hover::before {
-        opacity: 1;
-    }
 
     .signal-details {
         display: flex;

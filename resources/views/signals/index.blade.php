@@ -56,7 +56,7 @@
                                 <div class="direction-icon">
                                     <i class="fas fa-arrow-up"></i>
                                 </div>
-                                <div class="direction-text">CALL</div>
+                                <div class="direction-text">ВВЕРХ</div>
                             </div>
                             <div class="signal-info">
                                 <div class="signal-currency">EUR/USD</div>

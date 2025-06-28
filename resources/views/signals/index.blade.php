@@ -73,6 +73,10 @@
                                         <span class="detail-label">Цена входа:</span>
                                         <span class="detail-value signal-entry-price">1.0856</span>
                                 </div>
+                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
+                                    <i class="fas fa-eraser"></i>
+                                    <span class="btn-text">Очистить</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -81,10 +85,7 @@
 
                     </div>
 
-                    <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
-                            <i class="fas fa-eraser"></i>
-                            <span class="btn-text">Очистить</span>
-                    </button>
+                    
 
                     <!-- Информационный блок -->
                     <div class="alert alert-info mt-4 info-block" role="alert">

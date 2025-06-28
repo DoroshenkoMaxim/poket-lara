@@ -914,8 +914,7 @@
 <script>
     class SignalGenerator {
         constructor() {
-            // Получаем валюты из PHP переменной или используем резервный список
-            this.currencies = @json($currencies ?? [
+            this.currencies = [
                 'AED/CNY', 'AUD/CAD', 'AUD/CHF', 'AUD/JPY', 'AUD/NZD', 'AUD/USD',
                 'BHD/CNY', 'CAD/CHF', 'CAD/JPY', 'CHF/JPY', 'CHF/NOK',
                 'EUR/AUD', 'EUR/CAD', 'EUR/CHF', 'EUR/GBP', 'EUR/HUF', 'EUR/JPY', 
@@ -926,7 +925,7 @@
                 'USD/CHF', 'USD/CLP', 'USD/CNH', 'USD/COP', 'USD/DZD', 'USD/EGP', 
                 'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
                 'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
-            ]);
+            ];
             this.timeframes = ['30s', '1m', '2m', '3m', '4m', '5m',];
             this.selectedCurrency = null;
             this.selectedTimeframe = null;
@@ -937,68 +936,6 @@
 
         init() {
             this.bindEvents();
-            this.loadCurrenciesFromAPI(); // Загружаем актуальные валюты из API
-        }
-
-        /**
-         * Загрузка валют из API (обновляет список валют из базы данных)
-         */
-        async loadCurrenciesFromAPI() {
-            try {
-                const response = await fetch('/api/signals/currencies');
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success && data.currencies && data.currencies.length > 0) {
-                        this.currencies = data.currencies;
-                        console.log(`Loaded ${data.currencies.length} currencies from database`);
-                        this.updateCurrencyButtons(); // Обновляем кнопки валют в интерфейсе
-                    }
-                }
-            } catch (error) {
-                console.warn('Failed to load currencies from API, using fallback list:', error);
-            }
-        }
-
-        /**
-         * Обновление кнопок валют в интерфейсе
-         */
-        updateCurrencyButtons() {
-            const currencyContainer = document.querySelector('#currencyModal .modal-body .row');
-            if (!currencyContainer) return;
-
-            // Сохраняем поиск
-            const searchInput = document.getElementById('currencySearch');
-            const currentSearch = searchInput ? searchInput.value : '';
-
-            // Очищаем контейнер
-            currencyContainer.innerHTML = '';
-
-            // Создаем новые кнопки
-            this.currencies.forEach(currency => {
-                const colDiv = document.createElement('div');
-                colDiv.className = 'col-md-6 mb-2';
-                
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'btn btn-outline-primary btn-block currency-btn';
-                button.setAttribute('data-currency', currency);
-                button.textContent = currency;
-                
-                // Добавляем обработчик события
-                button.addEventListener('click', () => {
-                    this.selectCurrency(currency);
-                    this.closeModal('currencyModal');
-                });
-                
-                colDiv.appendChild(button);
-                currencyContainer.appendChild(colDiv);
-            });
-
-            // Восстанавливаем поиск
-            if (currentSearch) {
-                searchInput.value = currentSearch;
-                this.filterCurrencies(currentSearch);
-            }
         }
 
         bindEvents() {

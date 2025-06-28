@@ -588,9 +588,9 @@
     }
 
     .filter-btn.active {
-        background: #007bff;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        border-color: #007bff;
+        border-color: transparent;
     }
 
     .filter-title {
@@ -606,9 +606,9 @@
     }
 
     #findSignalBtn {
-        border-radius: 4px;
-        background: #28a745 !important;
-        border: 1px solid #28a745 !important;
+        border-radius: 25px;
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
+        border: none !important;
         font-size: 1.2rem;
         font-weight: 600;
         color: white !important;
@@ -619,15 +619,15 @@
     #findSignalBtn:active,
     #findSignalBtn.focus,
     #findSignalBtn.active {
-        background: #218838 !important;
-        border: 1px solid #1e7e34 !important;
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
+        border: none !important;
         color: white !important;
         box-shadow: none !important;
         outline: none !important;
     }
 
     #findSignalBtn:disabled {
-        background: #28a745 !important;
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
         color: white !important;
         opacity: 0.7;
         cursor: not-allowed;
@@ -657,11 +657,10 @@
     }
 
     .signal-card {
-        background: transparent;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        padding: 20px;
-        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
         display: flex;
         align-items: center;
         gap: 30px;
@@ -669,15 +668,11 @@
     }
 
     .signal-card.win {
-        background: #d4edda;
-        border-color: #28a745;
-        color: #155724;
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
     }
 
     .signal-card.lose {
-        background: #f8d7da;
-        border-color: #dc3545;
-        color: #721c24;
+        background: linear-gradient(135deg, #ff3d00 0%, #cc0000 100%);
     }
 
     .signal-card .result-badge {
@@ -781,7 +776,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px;
+        padding: 8px 0;
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
@@ -806,7 +801,7 @@
     /* Кнопки действий */
     .action-btn {
         height: 80px;
-        border-radius: 4px;
+        border-radius: 15px;
         position: relative;
         overflow: hidden;
         display: flex;
@@ -814,14 +809,12 @@
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        background: #28a745;
-        border: 1px solid #28a745;
-        color: white;
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
+        border: none;
     }
 
     .action-btn.btn-primary {
-        background: #007bff;
-        border-color: #007bff;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
     .action-btn i {
@@ -845,10 +838,10 @@
 
     /* Информационный блок */
     .info-block {
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        background: #f8f9fa;
-        border-left: 4px solid #17a2b8;
+        border: none;
+        border-radius: 15px;
+        background: linear-gradient(135deg, rgba(38, 198, 218, 0.1) 0%, rgba(0, 172, 193, 0.1) 100%);
+        border-left: 4px solid #26c6da;
     }
 
     .tips-list {
@@ -1296,8 +1289,8 @@
                 left: 0;
                 right: 0;
                 height: 4px;
-                background: #e9ecef;
-                border-radius: 0 0 4px 4px;
+                background: rgba(255,255,255,0.2);
+                border-radius: 0 0 25px 25px;
                 overflow: hidden;
                 z-index: 10;
             `;
@@ -1307,9 +1300,10 @@
             progressBar.style.cssText = `
                 height: 100%;
                 width: 0%;
-                background: #28a745;
+                background: linear-gradient(90deg, #00c851, #00ff66);
+                box-shadow: 0 0 10px rgba(0,255,102,0.5);
                 transition: width 0.1s ease-out;
-                border-radius: 0 0 4px 4px;
+                border-radius: 0 0 25px 25px;
                 transform: translateZ(0);
             `;
 

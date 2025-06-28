@@ -395,7 +395,7 @@ try {
         
         // Генерация случайного сигнала
         function generateSignal() {
-            const types = ['call', 'put'];
+            const types = ['ВВЕРХ', 'ВНИЗ'];
             const expirations = [1, 3, 5];
             const entryDelays = [1, 2, 3, 5, 8];
             

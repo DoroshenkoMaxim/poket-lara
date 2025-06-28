@@ -138,7 +138,7 @@
                             <i class="fas fa-info-circle"></i> Информация о сигналах
                         </h6>
                         <p class="mb-2">
-                            • Сигналы обновляются каждые 5 минут автоматически<br>
+                            • Сигналы обновляются каждую 1 минуту автоматически<br>
                             • Для максимальной прибыли следуйте сигналам с точностью выше 80%<br>
                             • Рекомендуемая сумма сделки: 2-5% от депозита<br>
                             • Используйте стратегию управления капиталом
@@ -208,21 +208,21 @@
 </style>
 
 <script>
-    // Автообновление страницы каждые 5 минут
+    // Автообновление страницы каждую 1 минуту
     setTimeout(function() {
         location.reload();
-    }, 300000);
+    }, 60000);
     
     // Показать время до следующего обновления
-    let countdown = 300;
+    let countdown = 60;
     setInterval(function() {
         countdown--;
         if (countdown <= 0) {
-            countdown = 300;
+            countdown = 60;
         }
         const minutes = Math.floor(countdown/60);
         const seconds = countdown % 60;
-        document.title = `Сигналы (обновление через ${minutes}:${seconds.toString().padStart(2, '0')})`;
+        document.title = `Сигналы (${minutes}:${seconds.toString().padStart(2, '0')})`;
     }, 1000);
 
     // Уведомление о новых сигналах

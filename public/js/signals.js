@@ -242,9 +242,9 @@ class SimpleSignalGenerator {
             <div class="signal-result">
                 <div class="signal-card">
                     <div class="signal-direction">
-                        <div class="direction-icon ${signal.direction}">
-                            <i class="fas fa-arrow-${signal.direction === 'вверх' ? 'up' : 'down'}"></i>
-                        </div>
+                                                 <div class="direction-icon ${signal.direction}">
+                             <span>${signal.direction === 'вверх' ? '↑' : '↓'}</span>
+                         </div>
                         <h3 class="direction-text">${signal.direction.toUpperCase()}</h3>
                     </div>
                     

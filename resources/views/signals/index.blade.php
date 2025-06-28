@@ -781,7 +781,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
+        padding: 8px;
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 

@@ -114,8 +114,9 @@ body {
     margin-bottom: 10px;
 }
 
-.direction-icon i {
+.direction-icon span {
     font-size: 2rem;
+    font-weight: bold;
 }
 
 .direction-icon.вверх {
@@ -248,7 +249,7 @@ body {
         padding: 10px;
     }
     
-    .direction-icon i {
+    .direction-icon span {
         font-size: 1.5rem;
     }
     

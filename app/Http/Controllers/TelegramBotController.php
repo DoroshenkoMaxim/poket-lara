@@ -381,33 +381,65 @@ class TelegramBotController extends Controller
     public function cleanAndSetupWebhook(): JsonResponse
     {
         try {
+            Log::info('=== STARTING WEBHOOK CLEAN AND SETUP ===');
+            
             // 1. Получаем текущую информацию
             $currentWebhook = $this->telegramBot->getWebhookInfo();
+            Log::info('Current webhook info', ['webhook' => $currentWebhook]);
             
             // 2. Удаляем существующий webhook
             $deleteResult = $this->telegramBot->deleteWebhook();
+            Log::info('Delete webhook result', ['result' => $deleteResult]);
             
             // 3. Ждем немного
-            sleep(2);
+            sleep(3);
             
             // 4. Устанавливаем новый webhook
             $webhookUrl = url('/telegram/webhook');
+            Log::info('Setting new webhook', ['url' => $webhookUrl]);
+            
             $setResult = $this->telegramBot->setWebhook($webhookUrl);
+            Log::info('Set webhook result', ['result' => $setResult]);
+            
+            // Если установка не удалась, пробуем еще раз
+            if (!$setResult || !isset($setResult['ok']) || !$setResult['ok']) {
+                Log::warning('First webhook setup attempt failed, retrying...');
+                sleep(2);
+                $setResult = $this->telegramBot->setWebhook($webhookUrl);
+                Log::info('Second webhook setup attempt', ['result' => $setResult]);
+            }
             
             // 5. Проверяем результат
+            sleep(2);
             $newWebhook = $this->telegramBot->getWebhookInfo();
+            Log::info('New webhook info after setup', ['webhook' => $newWebhook]);
             
-            // 6. Тестируем отправкой сообщения боту самому себе
+            // 6. Получаем информацию о боте
             $botInfo = $this->telegramBot->getMe();
             
+            // Проверяем успешность установки
+            $success = $setResult && isset($setResult['ok']) && $setResult['ok'];
+            $webhookInstalled = $newWebhook && 
+                               isset($newWebhook['result']['url']) && 
+                               $newWebhook['result']['url'] === $webhookUrl;
+            
+            Log::info('Webhook setup completed', [
+                'success' => $success,
+                'webhook_installed' => $webhookInstalled,
+                'final_url' => $newWebhook['result']['url'] ?? 'none'
+            ]);
+            
             return response()->json([
-                'success' => true,
-                'message' => 'Webhook полностью переустановлен',
+                'success' => $success && $webhookInstalled,
+                'message' => $success && $webhookInstalled ? 
+                    'Webhook полностью переустановлен' : 
+                    'Возможны проблемы с установкой webhook',
                 'steps' => [
                     'old_webhook' => $currentWebhook,
                     'delete_result' => $deleteResult,
                     'set_result' => $setResult,
                     'new_webhook' => $newWebhook,
+                    'webhook_url_matches' => $webhookInstalled,
                 ],
                 'bot_info' => $botInfo,
                 'webhook_url' => $webhookUrl,
@@ -415,6 +447,13 @@ class TelegramBotController extends Controller
             ]);
             
         } catch (\Exception $e) {
+            Log::error('=== ERROR IN WEBHOOK CLEAN AND SETUP ===', [
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),

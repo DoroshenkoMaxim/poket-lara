@@ -126,15 +126,34 @@ class TelegramBotService
     private function makeRequest(string $method, array $params = []): ?array
     {
         try {
-            $response = Http::timeout(30)->post($this->apiUrl . $method, $params);
+            $url = $this->apiUrl . $method;
+            
+            Log::info("Making Telegram API request", [
+                'method' => $method,
+                'url' => $url,
+                'params' => $params
+            ]);
+            
+            $response = Http::timeout(30)->post($url, $params);
+            
+            Log::info("Telegram API response", [
+                'method' => $method,
+                'status' => $response->status(),
+                'successful' => $response->successful()
+            ]);
             
             if ($response->successful()) {
                 $result = $response->json();
                 
+                Log::info("Telegram API result", [
+                    'method' => $method,
+                    'result' => $result
+                ]);
+                
                 if ($result && $result['ok']) {
                     return $result;
                 } else {
-                    Log::error('Telegram API error', [
+                    Log::error('Telegram API error - result not ok', [
                         'method' => $method,
                         'params' => $params,
                         'response' => $result
@@ -143,14 +162,19 @@ class TelegramBotService
             } else {
                 Log::error('HTTP error in Telegram request', [
                     'method' => $method,
+                    'url' => $url,
                     'status' => $response->status(),
-                    'body' => $response->body()
+                    'body' => $response->body(),
+                    'params' => $params
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Exception in Telegram request', [
                 'method' => $method,
-                'error' => $e->getMessage()
+                'url' => $this->apiUrl . $method,
+                'params' => $params,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
 

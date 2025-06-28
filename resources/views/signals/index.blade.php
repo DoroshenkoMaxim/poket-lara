@@ -11,7 +11,7 @@
                 <div class="card-header text-center">
                     <h3 class="mb-0">
                         <i class="fas fa-chart-line text-primary"></i>
-                        Торговые сигналы PocketOption
+                        PocketOption
                     </h3>
                 </div>
                 <div class="card-body">
@@ -36,7 +36,6 @@
                                     id="martingaleBtn">
                                 <i class="fas fa-chart-area"></i>
                                 <span class="filter-title">Весь рынок</span>
-                                <span class="filter-subtitle">Мартингейл</span>
                             </button>
                         </div>
                     </div>
@@ -290,9 +289,10 @@
         position: relative;
         overflow: hidden;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
+        gap: 10px;
     }
 
     .filter-btn.active {

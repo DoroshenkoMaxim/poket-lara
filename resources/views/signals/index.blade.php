@@ -18,14 +18,14 @@
                     <!-- Фильтры -->
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-outline-primary btn-lg w-100 filter-btn" 
+                            <button type="button" class="btn btn-outline-primary btn-lg filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#currencyModal" id="currencyBtn">
                                 <i class="fas fa-coins"></i>
                                 <span class="filter-title">Валюты</span>
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-outline-info btn-lg w-100 filter-btn" 
+                            <button type="button" class="btn btn-outline-info btn-lg filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#timeframeModal" id="timeframeBtn">
                                 <i class="fas fa-clock"></i>
                                 <span class="filter-title">Таймфреймы</span>

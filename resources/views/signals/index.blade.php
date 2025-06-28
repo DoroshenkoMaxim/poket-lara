@@ -117,7 +117,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="row g-3">
+                <!-- Поиск -->
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="currencySearch" placeholder="🔍 Поиск валютной пары...">
+                </div>
+                
+                <!-- Основные валютные пары -->
+                <h6 class="mb-3 text-primary">📈 Основные пары</h6>
+                <div class="row g-2 mb-4">
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="EUR/USD">
                             <strong>EUR/USD</strong>
@@ -149,12 +156,6 @@
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
-                        <button class="btn btn-outline-primary w-100 currency-btn" data-currency="EUR/GBP">
-                            <strong>EUR/GBP</strong>
-                            <small class="d-block text-muted">Euro/Pound</small>
-                        </button>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="USD/CHF">
                             <strong>USD/CHF</strong>
                             <small class="d-block text-muted">Dollar/Franc</small>
@@ -166,10 +167,331 @@
                             <small class="d-block text-muted">Kiwi/Dollar</small>
                         </button>
                     </div>
+                </div>
+
+                <!-- Кросс-пары -->
+                <h6 class="mb-3 text-success">🔄 Кросс-пары</h6>
+                <div class="row g-2 mb-4">
                     <div class="col-md-6 col-lg-4">
-                        <button class="btn btn-outline-primary w-100 currency-btn" data-currency="EUR/JPY">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="EUR/GBP">
+                            <strong>EUR/GBP</strong>
+                            <small class="d-block text-muted">Euro/Pound</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="EUR/JPY">
                             <strong>EUR/JPY</strong>
                             <small class="d-block text-muted">Euro/Yen</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="EUR/CHF">
+                            <strong>EUR/CHF</strong>
+                            <small class="d-block text-muted">Euro/Franc</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="EUR/AUD">
+                            <strong>EUR/AUD</strong>
+                            <small class="d-block text-muted">Euro/Aussie</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="EUR/CAD">
+                            <strong>EUR/CAD</strong>
+                            <small class="d-block text-muted">Euro/Canadian</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="EUR/NZD">
+                            <strong>EUR/NZD</strong>
+                            <small class="d-block text-muted">Euro/Kiwi</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="GBP/JPY">
+                            <strong>GBP/JPY</strong>
+                            <small class="d-block text-muted">Pound/Yen</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="GBP/CHF">
+                            <strong>GBP/CHF</strong>
+                            <small class="d-block text-muted">Pound/Franc</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="GBP/AUD">
+                            <strong>GBP/AUD</strong>
+                            <small class="d-block text-muted">Pound/Aussie</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="GBP/CAD">
+                            <strong>GBP/CAD</strong>
+                            <small class="d-block text-muted">Pound/Canadian</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="AUD/CAD">
+                            <strong>AUD/CAD</strong>
+                            <small class="d-block text-muted">Aussie/Canadian</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="AUD/CHF">
+                            <strong>AUD/CHF</strong>
+                            <small class="d-block text-muted">Aussie/Franc</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="AUD/JPY">
+                            <strong>AUD/JPY</strong>
+                            <small class="d-block text-muted">Aussie/Yen</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="AUD/NZD">
+                            <strong>AUD/NZD</strong>
+                            <small class="d-block text-muted">Aussie/Kiwi</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="CAD/CHF">
+                            <strong>CAD/CHF</strong>
+                            <small class="d-block text-muted">Canadian/Franc</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="CAD/JPY">
+                            <strong>CAD/JPY</strong>
+                            <small class="d-block text-muted">Canadian/Yen</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="CHF/JPY">
+                            <strong>CHF/JPY</strong>
+                            <small class="d-block text-muted">Franc/Yen</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="CHF/NOK">
+                            <strong>CHF/NOK</strong>
+                            <small class="d-block text-muted">Franc/Krone</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-success w-100 currency-btn" data-currency="NZD/JPY">
+                            <strong>NZD/JPY</strong>
+                            <small class="d-block text-muted">Kiwi/Yen</small>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Экзотические пары -->
+                <h6 class="mb-3 text-warning">🌍 Экзотические пары</h6>
+                <div class="row g-2 mb-4">
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="EUR/TRY">
+                            <strong>EUR/TRY</strong>
+                            <small class="d-block text-muted">Euro/Lira</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="EUR/HUF">
+                            <strong>EUR/HUF</strong>
+                            <small class="d-block text-muted">Euro/Forint</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="USD/CNH">
+                            <strong>USD/CNH</strong>
+                            <small class="d-block text-muted">Dollar/Yuan</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="USD/BRL">
+                            <strong>USD/BRL</strong>
+                            <small class="d-block text-muted">Dollar/Real</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="USD/MXN">
+                            <strong>USD/MXN</strong>
+                            <small class="d-block text-muted">Dollar/Peso</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="USD/INR">
+                            <strong>USD/INR</strong>
+                            <small class="d-block text-muted">Dollar/Rupee</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="USD/SGD">
+                            <strong>USD/SGD</strong>
+                            <small class="d-block text-muted">Dollar/Singapore</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="USD/THB">
+                            <strong>USD/THB</strong>
+                            <small class="d-block text-muted">Dollar/Baht</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-warning w-100 currency-btn" data-currency="ZAR/USD">
+                            <strong>ZAR/USD</strong>
+                            <small class="d-block text-muted">Rand/Dollar</small>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OTC Пары -->
+                <h6 class="mb-3 text-info">⏰ OTC Пары</h6>
+                <div class="row g-2">
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="AED/CNY">
+                            <strong>AED/CNY</strong>
+                            <small class="d-block text-muted">Dirham/Yuan</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="BHD/CNY">
+                            <strong>BHD/CNY</strong>
+                            <small class="d-block text-muted">Dinar/Yuan</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="JOD/CNY">
+                            <strong>JOD/CNY</strong>
+                            <small class="d-block text-muted">Dinar/Yuan</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="OMR/CNY">
+                            <strong>OMR/CNY</strong>
+                            <small class="d-block text-muted">Rial/Yuan</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="QAR/CNY">
+                            <strong>QAR/CNY</strong>
+                            <small class="d-block text-muted">Riyal/Yuan</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="SAR/CNY">
+                            <strong>SAR/CNY</strong>
+                            <small class="d-block text-muted">Riyal/Yuan</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="KES/USD">
+                            <strong>KES/USD</strong>
+                            <small class="d-block text-muted">Shilling/Dollar</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="NGN/USD">
+                            <strong>NGN/USD</strong>
+                            <small class="d-block text-muted">Naira/Dollar</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/ARS">
+                            <strong>USD/ARS</strong>
+                            <small class="d-block text-muted">Dollar/Peso</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/CLP">
+                            <strong>USD/CLP</strong>
+                            <small class="d-block text-muted">Dollar/Peso</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/COP">
+                            <strong>USD/COP</strong>
+                            <small class="d-block text-muted">Dollar/Peso</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/EGP">
+                            <strong>USD/EGP</strong>
+                            <small class="d-block text-muted">Dollar/Pound</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/IDR">
+                            <strong>USD/IDR</strong>
+                            <small class="d-block text-muted">Dollar/Rupiah</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/MYR">
+                            <strong>USD/MYR</strong>
+                            <small class="d-block text-muted">Dollar/Ringgit</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/PHP">
+                            <strong>USD/PHP</strong>
+                            <small class="d-block text-muted">Dollar/Peso</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/PKR">
+                            <strong>USD/PKR</strong>
+                            <small class="d-block text-muted">Dollar/Rupee</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/VND">
+                            <strong>USD/VND</strong>
+                            <small class="d-block text-muted">Dollar/Dong</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/BDT">
+                            <strong>USD/BDT</strong>
+                            <small class="d-block text-muted">Dollar/Taka</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="USD/DZD">
+                            <strong>USD/DZD</strong>
+                            <small class="d-block text-muted">Dollar/Dinar</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="LBP/USD">
+                            <strong>LBP/USD</strong>
+                            <small class="d-block text-muted">Pound/Dollar</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="MAD/USD">
+                            <strong>MAD/USD</strong>
+                            <small class="d-block text-muted">Dirham/Dollar</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="TND/USD">
+                            <strong>TND/USD</strong>
+                            <small class="d-block text-muted">Dinar/Dollar</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="UAH/USD">
+                            <strong>UAH/USD</strong>
+                            <small class="d-block text-muted">Hryvnia/Dollar</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <button class="btn btn-outline-info w-100 currency-btn" data-currency="YER/USD">
+                            <strong>YER/USD</strong>
+                            <small class="d-block text-muted">Rial/Dollar</small>
                         </button>
                     </div>
                 </div>
@@ -610,6 +932,47 @@
             document.getElementById('findSignalBtn').addEventListener('click', () => {
                 this.findSignal();
             });
+
+            // Поиск валютных пар
+            const currencySearch = document.getElementById('currencySearch');
+            if (currencySearch) {
+                currencySearch.addEventListener('input', (e) => {
+                    this.filterCurrencies(e.target.value);
+                });
+            }
+        }
+
+        filterCurrencies(searchTerm) {
+            const term = searchTerm.toLowerCase();
+            const currencyButtons = document.querySelectorAll('.currency-btn');
+            
+            currencyButtons.forEach(btn => {
+                const currency = btn.dataset.currency.toLowerCase();
+                const currencyText = btn.textContent.toLowerCase();
+                const parentDiv = btn.closest('.col-md-6');
+                
+                if (currency.includes(term) || currencyText.includes(term)) {
+                    parentDiv.style.display = '';
+                } else {
+                    parentDiv.style.display = 'none';
+                }
+            });
+
+            // Показать/скрыть заголовки категорий
+            const categories = document.querySelectorAll('#currencyModal h6');
+            categories.forEach(category => {
+                const nextDiv = category.nextElementSibling;
+                if (nextDiv && nextDiv.classList.contains('row')) {
+                    const visibleButtons = nextDiv.querySelectorAll('.col-md-6:not([style*="display: none"])');
+                    if (visibleButtons.length === 0) {
+                        category.style.display = 'none';
+                        nextDiv.style.display = 'none';
+                    } else {
+                        category.style.display = '';
+                        nextDiv.style.display = '';
+                    }
+                }
+            });
         }
 
         selectCurrency(currency) {
@@ -1030,6 +1393,15 @@
             // Очистить data-атрибуты
             document.body.removeAttribute('data-bs-overflow');
             document.body.removeAttribute('data-bs-padding-right');
+
+            // Очистить поиск валют при закрытии модального окна
+            if (modalId === 'currencyModal') {
+                const currencySearch = document.getElementById('currencySearch');
+                if (currencySearch) {
+                    currencySearch.value = '';
+                    this.filterCurrencies(''); // Показать все валютные пары
+                }
+            }
         }
     }
 

@@ -348,7 +348,12 @@ class SimpleSignalGenerator {
 
     getTimeframeDuration(timeframe) {
         const durations = {
-            '5s': 5000, '15s': 15000, '30s': 30000, '1m': 60000, '2m': 120000, '3m': 180000,
+            '5s': 5000,
+            '15s': 15000,
+            '30s': 30000,
+            '1m': 60000,
+            '2m': 120000,
+            '3m': 180000,
         };
         return durations[timeframe] || 60000;
     }

@@ -588,9 +588,9 @@
     }
 
     .filter-btn.active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #007bff;
         color: white;
-        border-color: transparent;
+        border-color: #007bff;
     }
 
     .filter-title {
@@ -606,9 +606,9 @@
     }
 
     #findSignalBtn {
-        border-radius: 25px;
-        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
-        border: none !important;
+        border-radius: 4px;
+        background: #28a745 !important;
+        border: 1px solid #28a745 !important;
         font-size: 1.2rem;
         font-weight: 600;
         color: white !important;
@@ -619,15 +619,15 @@
     #findSignalBtn:active,
     #findSignalBtn.focus,
     #findSignalBtn.active {
-        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
-        border: none !important;
+        background: #218838 !important;
+        border: 1px solid #1e7e34 !important;
         color: white !important;
         box-shadow: none !important;
         outline: none !important;
     }
 
     #findSignalBtn:disabled {
-        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
+        background: #28a745 !important;
         color: white !important;
         opacity: 0.7;
         cursor: not-allowed;
@@ -657,10 +657,11 @@
     }
 
     .signal-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        padding: 30px;
-        color: white;
+        background: transparent;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 20px;
+        color: #333;
         display: flex;
         align-items: center;
         gap: 30px;
@@ -668,11 +669,15 @@
     }
 
     .signal-card.win {
-        background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
     }
 
     .signal-card.lose {
-        background: linear-gradient(135deg, #ff3d00 0%, #cc0000 100%);
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
     }
 
     .signal-card .result-badge {
@@ -801,7 +806,7 @@
     /* Кнопки действий */
     .action-btn {
         height: 80px;
-        border-radius: 15px;
+        border-radius: 4px;
         position: relative;
         overflow: hidden;
         display: flex;
@@ -809,12 +814,14 @@
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
-        border: none;
+        background: #28a745;
+        border: 1px solid #28a745;
+        color: white;
     }
 
     .action-btn.btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #007bff;
+        border-color: #007bff;
     }
 
     .action-btn i {
@@ -838,10 +845,10 @@
 
     /* Информационный блок */
     .info-block {
-        border: none;
-        border-radius: 15px;
-        background: linear-gradient(135deg, rgba(38, 198, 218, 0.1) 0%, rgba(0, 172, 193, 0.1) 100%);
-        border-left: 4px solid #26c6da;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        background: #f8f9fa;
+        border-left: 4px solid #17a2b8;
     }
 
     .tips-list {
@@ -1289,8 +1296,8 @@
                 left: 0;
                 right: 0;
                 height: 4px;
-                background: rgba(255,255,255,0.2);
-                border-radius: 0 0 25px 25px;
+                background: #e9ecef;
+                border-radius: 0 0 4px 4px;
                 overflow: hidden;
                 z-index: 10;
             `;
@@ -1300,10 +1307,9 @@
             progressBar.style.cssText = `
                 height: 100%;
                 width: 0%;
-                background: linear-gradient(90deg, #00c851, #00ff66);
-                box-shadow: 0 0 10px rgba(0,255,102,0.5);
+                background: #28a745;
                 transition: width 0.1s ease-out;
-                border-radius: 0 0 25px 25px;
+                border-radius: 0 0 4px 4px;
                 transform: translateZ(0);
             `;
 

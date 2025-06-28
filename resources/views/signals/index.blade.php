@@ -73,10 +73,6 @@
                                         <span class="detail-label">Цена входа:</span>
                                         <span class="detail-value signal-entry-price">1.0856</span>
                                 </div>
-                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
-                                    <i class="fas fa-eraser"></i>
-                                    <span class="btn-text">Очистить</span>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -561,9 +557,7 @@
         }
 
         init() {
-            this.loadFromStorage();
             this.bindEvents();
-            this.restoreSignal();
         }
 
         bindEvents() {
@@ -587,107 +581,19 @@
             document.getElementById('findSignalBtn').addEventListener('click', () => {
                 this.findSignal();
             });
-
-            // Сброс фильтров
-            document.getElementById('clearFiltersBtn').addEventListener('click', () => {
-                this.clearFilters();
-            });
         }
 
         selectCurrency(currency) {
             this.selectedCurrency = currency;
             this.updateFilterButtons();
-            this.saveToStorage();
         }
 
         selectTimeframe(timeframe) {
             this.selectedTimeframe = timeframe;
             this.updateFilterButtons();
-            this.saveToStorage();
         }
 
-        saveToStorage() {
-            try {
-                const data = {
-                    selectedCurrency: this.selectedCurrency,
-                    selectedTimeframe: this.selectedTimeframe,
-                    lastSignal: this.lastSignal
-                };
-                localStorage.setItem('signalFilters', JSON.stringify(data));
-            } catch (e) {
-                console.log('Ошибка сохранения в localStorage:', e);
-            }
-        }
 
-        loadFromStorage() {
-            try {
-                const saved = localStorage.getItem('signalFilters');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    this.selectedCurrency = data.selectedCurrency || null;
-                    this.selectedTimeframe = data.selectedTimeframe || null;
-                    this.lastSignal = data.lastSignal || null;
-                    this.updateFilterButtons();
-                }
-            } catch (e) {
-                console.log('Ошибка загрузки из localStorage:', e);
-            }
-        }
-
-        restoreSignal() {
-            if (this.lastSignal && this.lastSignal.currency) {
-                // Восстановить отображение сигнала
-                this.displaySignal(this.lastSignal);
-                
-                // Скрыть загрузку и показать результат
-                const loadingAnimation = document.getElementById('loadingAnimation');
-                const signalResult = document.getElementById('signalResult');
-                const findBtn = document.getElementById('findSignalBtn');
-                
-                loadingAnimation.classList.add('d-none');
-                signalResult.classList.remove('d-none');
-                
-                // Показать результат если он есть
-                if (this.lastSignal.result !== undefined) {
-                    this.showTradeResult(this.lastSignal.result, this.lastSignal);
-                    
-                    // Если есть результат, значит торговля завершена
-                    findBtn.style.display = 'inline-block';
-                    findBtn.disabled = false;
-                    findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
-                }
-            }
-        }
-
-        clearFilters() {
-            // Очистить все фильтры и сигналы
-            this.selectedCurrency = null;
-            this.selectedTimeframe = null;
-            this.lastSignal = null;
-            
-            // Очистить localStorage
-            try {
-                localStorage.removeItem('signalFilters');
-            } catch (e) {
-                console.log('Ошибка очистки localStorage:', e);
-            }
-            
-            // Обновить интерфейс
-            this.updateFilterButtons();
-            
-            // Скрыть все результаты
-            const loadingAnimation = document.getElementById('loadingAnimation');
-            const signalResult = document.getElementById('signalResult');
-            const findBtn = document.getElementById('findSignalBtn');
-            
-            loadingAnimation.classList.add('d-none');
-            signalResult.classList.add('d-none');
-            
-            // Восстановить кнопку поиска
-            findBtn.style.display = 'inline-block';
-            findBtn.disabled = false;
-            findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
-        }
 
         updateFilterButtons() {
             const currencyBtn = document.getElementById('currencyBtn');
@@ -719,7 +625,6 @@
 
             // Очистить предыдущий сигнал
             this.lastSignal = null;
-            this.saveToStorage();
 
             // Показать загрузку
             findBtn.disabled = true;
@@ -736,7 +641,6 @@
             // Сгенерировать сигнал
             const signal = this.generateSignal();
             this.lastSignal = signal;
-            this.saveToStorage();
             this.displaySignal(signal);
 
             // Скрыть загрузку и показать результат
@@ -753,7 +657,6 @@
             // Определить результат и показать
             const isWin = Math.random() > 0.25; // 75% шанс выигрыша
             this.lastSignal.result = isWin;
-            this.saveToStorage();
             this.showTradeResult(isWin, signal);
 
             // Показать кнопку снова через 3 секунды

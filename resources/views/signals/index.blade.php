@@ -259,7 +259,6 @@
 
     .filter-btn {
         border-radius: 25px;
-        padding: 20px 30px;
         font-size: 1.2rem;
         font-weight: 600;
         display: flex;
@@ -529,7 +528,6 @@
         
         /* Компактные кнопки фильтров для мобильных */
         .filter-btn {
-            padding: 15px 20px;
             font-size: 1rem;
         }
         

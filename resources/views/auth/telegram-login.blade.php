@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="step-item">
                                     <span class="step-number">4</span>
-                                    <span class="step-text">После торговли получите доступ к сигналам</span>
+                                    <span class="step-text">После депозита больше 10$ получите доступ к сигналам</span>
                                 </div>
                             </div>
 

@@ -269,7 +269,13 @@
 
 <!-- Стили -->
 <style>
-    /* Отключение всех hover эффектов */
+    /* Отключение всех анимаций и эффектов */
+    * {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+
     .btn:hover, .btn:focus, .btn:active,
     .filter-btn:hover, .filter-btn:focus, .filter-btn:active,
     .currency-btn:hover, .currency-btn:focus, .currency-btn:active,
@@ -283,11 +289,9 @@
         color: inherit !important;
     }
 
-
     .main-card {
         border: none;
         border-radius: 15px;
-
     }
 
     .filter-btn {
@@ -300,8 +304,6 @@
         align-items: center;
         justify-content: center;
     }
-
-
 
     .filter-btn.active {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -321,8 +323,6 @@
         margin: 0;
     }
 
-
-
     #findSignalBtn {
         border-radius: 25px;
         background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
@@ -330,8 +330,6 @@
         font-size: 1.2rem;
         font-weight: 600;
     }
-
-
 
     .loading-animation {
         text-align: center;
@@ -374,7 +372,6 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 10px;
-
     }
 
     .direction-icon i {
@@ -443,7 +440,6 @@
         font-size: 1.3rem;
         font-weight: 700;
         text-transform: uppercase;
-
     }
 
     .result-badge.win {
@@ -461,11 +457,6 @@
         position: relative;
         overflow: hidden;
     }
-
-
-
-
-
 
     /* Кнопки действий */
     .action-btn {
@@ -485,8 +476,6 @@
     .action-btn.btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-
-
 
     .action-btn i {
         font-size: 1.5rem;
@@ -513,7 +502,6 @@
         border-radius: 15px;
         background: linear-gradient(135deg, rgba(38, 198, 218, 0.1) 0%, rgba(0, 172, 193, 0.1) 100%);
         border-left: 4px solid #26c6da;
-
     }
 
     .tips-list {
@@ -534,8 +522,6 @@
         position: absolute;
         left: 0;
     }
-
-
 
     /* Адаптивность для мобильных устройств */
     @media (max-width: 768px) {
@@ -680,20 +666,17 @@
             const signalResult = document.getElementById('signalResult');
             const tradeResult = document.getElementById('tradeResult');
 
-            // Показать загрузку с улучшенной анимацией
+            // Показать загрузку
             findBtn.disabled = true;
             findBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span class="btn-text">Поиск сигнала...</span>';
             signalResult.classList.add('d-none');
             tradeResult.classList.add('d-none');
             loadingAnimation.classList.remove('d-none');
             
-            // Звук начала поиска
-            this.playSound('start');
-            
             // Показать сообщения поиска
             this.showSearchMessages();
 
-            // Симуляция сложного поиска
+            // Симуляция поиска
             await this.delay(3000);
 
             // Сгенерировать сигнал
@@ -707,9 +690,7 @@
             // Скрыть кнопку поиска сигнала
             findBtn.style.display = 'none';
 
-            this.playSound('notification');
-
-            // Ждем завершения торговли с индикатором прогресса
+            // Ждем завершения торговли
             const duration = this.getTimeframeDuration(signal.timeframe);
             await this.waitForTradeCompletion(duration, signal);
 
@@ -801,7 +782,6 @@
                 height: 100%;
                 width: 0%;
                 background: linear-gradient(90deg, #00c851, #00ff66);
-                transition: width 0.1s linear;
                 box-shadow: 0 0 10px rgba(0,255,102,0.5);
             `;
 
@@ -909,50 +889,7 @@
             resultBadge.querySelector('i').className = `fas fa-${isWin ? 'trophy' : 'times-circle'}`;
 
             tradeResult.classList.remove('d-none');
-
-            // Звуковые эффекты
-            this.playSound(isWin ? 'win' : 'lose');
-
-            // Создать конфетти для выигрыша
-            if (isWin) {
-                this.createConfetti();
-            }
         }
-
-        playSound(type) {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const frequency = {
-                    'start': 440,
-                    'win': 523.25,
-                    'lose': 261.63,
-                    'notification': 880
-                }[type] || 440;
-
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-
-                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-                oscillator.type = type === 'win' ? 'sine' : type === 'lose' ? 'sawtooth' : 'square';
-
-                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {
-                console.log('Web Audio API не поддерживается');
-            }
-        }
-
-        createConfetti() {
-            // Конфетти отключено для экономии ресурсов
-        }
-
-
 
         getTimeframeDuration(timeframe) {
             const durations = {
@@ -963,56 +900,40 @@
             return durations[timeframe] || 60000;
         }
 
-
-
         delay(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
         closeModal(modalId) {
             const modalElement = document.getElementById(modalId);
-            const modal = bootstrap.Modal.getInstance(modalElement);
             
-            if (modal) {
-                modal.hide();
+            // Закрыть модальное окно
+            if (modalElement) {
+                modalElement.classList.remove('show');
+                modalElement.style.display = 'none';
+                modalElement.setAttribute('aria-hidden', 'true');
+                modalElement.setAttribute('aria-modal', 'false');
             }
             
-            // Принудительно удаляем backdrop и убираем класс modal-open
-            setTimeout(() => {
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) {
-                    backdrop.remove();
-                }
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            }, 100);
+            // Удалить все backdrop элементы
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            
+            // Очистить состояние body
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            // Очистить data-атрибуты
+            document.body.removeAttribute('data-bs-overflow');
+            document.body.removeAttribute('data-bs-padding-right');
         }
     }
 
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
-        // Запрос разрешения на уведомления
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
-
         // Инициализация генератора сигналов
         const signalGenerator = new SignalGenerator();
-
-        // Параллакс эффект отключен для экономии ресурсов
-
-        // Анимация появления отключена для экономии ресурсов
-
-        // Пульсация кнопки отключена для экономии ресурсов
-
-        // Горячие клавиши
-        document.addEventListener('keydown', (e) => {
-            if (e.key === ' ' && !findBtn.disabled) {
-                e.preventDefault();
-                findBtn.click();
-            }
-        });
 
         // Сохранение ссылки на генератор для глобального доступа
         window.signalGenerator = signalGenerator;

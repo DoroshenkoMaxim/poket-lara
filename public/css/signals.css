@@ -1,0 +1,576 @@
+/* Торговые сигналы - Стили */
+
+/* Основные переменные */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #00c851 0%, #00a040 100%);
+    --danger-gradient: linear-gradient(135deg, #ff3d00 0%, #cc0000 100%);
+    --warning-gradient: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+    --info-gradient: linear-gradient(135deg, #26c6da 0%, #00acc1 100%);
+    --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    --card-shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* Общие стили */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Карточка информации о пользователе */
+.user-info-card {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.user-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Основная карточка */
+.main-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.main-card:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+/* Кнопки фильтров */
+.filter-btn {
+    height: 120px;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0,0,0,0.1);
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+.filter-btn:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.filter-btn.active {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.filter-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 2px 0;
+    font-weight: 500;
+}
+
+.filter-stats {
+    font-size: 0.8rem;
+    margin-top: 8px;
+    opacity: 0.7;
+    font-weight: 600;
+    padding: 4px 8px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+/* Кнопка поиска сигнала */
+#findSignalBtn {
+    border-radius: 50px;
+    background: var(--success-gradient);
+    border: none;
+    font-size: 1.3rem;
+    font-weight: 700;
+    box-shadow: 0 8px 25px rgba(0,200,81,0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#findSignalBtn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+#findSignalBtn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+#findSignalBtn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,200,81,0.5);
+}
+
+#findSignalBtn:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Анимация загрузки */
+.loading-animation {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-animation .spinner-border {
+    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Результат сигнала */
+.signal-result {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.signal-card {
+    background: var(--primary-gradient);
+    border-radius: 25px;
+    padding: 40px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.signal-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.signal-direction {
+    text-align: center;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.direction-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    animation: pulse 2s infinite, float 3s ease-in-out infinite;
+    position: relative;
+}
+
+.direction-icon::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.3), transparent);
+    animation: rotate 4s linear infinite reverse;
+}
+
+.direction-icon i {
+    font-size: 3rem;
+    z-index: 1;
+    position: relative;
+}
+
+.direction-icon.call {
+    background: rgba(0,200,81,0.3);
+    color: #00ff66;
+    box-shadow: 0 0 30px rgba(0,255,102,0.5);
+}
+
+.direction-icon.put {
+    background: rgba(255,61,0,0.3);
+    color: #ff4444;
+    box-shadow: 0 0 30px rgba(255,68,68,0.5);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.direction-text {
+    font-size: 1.4rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.signal-info {
+    flex-grow: 1;
+    z-index: 1;
+}
+
+.signal-currency {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #fff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.signal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+    padding-left: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+}
+
+.detail-label {
+    font-size: 1rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.detail-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Результат сделки */
+.trade-result {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.result-badge {
+    display: inline-block;
+    padding: 20px 40px;
+    border-radius: 50px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: bounceIn 0.8s ease-out, glow 2s ease-in-out infinite alternate;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shine 1.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    100% { box-shadow: 0 5px 30px rgba(0,0,0,0.5), 0 0 50px rgba(255,255,255,0.2); }
+}
+
+.result-badge.win {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.result-badge.lose {
+    background: var(--danger-gradient);
+    color: white;
+}
+
+@keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { opacity: 1; transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Модальные окна */
+.modal-content {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding: 25px 30px;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+/* Кнопки валют и таймфреймов */
+.currency-btn, .timeframe-btn {
+    height: 90px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 15px;
+    background: rgba(255,255,255,0.9);
+    border: 2px solid rgba(0,0,0,0.1);
+}
+
+.currency-btn:hover, .timeframe-btn:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-color: #667eea;
+}
+
+.stats-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Анимации */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+.zoom-in {
+    animation: zoomIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes zoomIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.5) rotate(-5deg); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1) rotate(0deg); 
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .signal-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 30px 20px;
+    }
+    
+    .signal-currency {
+        font-size: 2rem;
+    }
+    
+    .direction-icon {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .direction-icon i {
+        font-size: 2.5rem;
+    }
+    
+    .filter-btn {
+        height: 100px;
+    }
+    
+    .filter-title {
+        font-size: 1rem;
+    }
+}
+
+/* Дополнительные эффекты */
+.signal-card {
+    animation: slideInUp 0.8s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Эффект частиц для фона */
+.main-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(0, 200, 81, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: 20px;
+}
+
+/* Эффект свечения для активных элементов */
+.filter-btn.active,
+#findSignalBtn:hover,
+.result-badge {
+    position: relative;
+}
+
+.filter-btn.active::after,
+#findSignalBtn:hover::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #00c851, #667eea);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.7;
+    filter: blur(10px);
+    animation: glowing 2s linear infinite;
+}
+
+@keyframes glowing {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+} 

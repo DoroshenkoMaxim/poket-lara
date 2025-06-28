@@ -61,8 +61,11 @@ Route::post('/postback', [PostbackController::class, 'handlePostback']);
 // Автоматическая авторизация по токену
 Route::get('/auto-login', [SignalsController::class, 'autoLogin'])->name('auto-login');
 
-// Страница сигналов
-Route::get('/signals', [SignalsController::class, 'show'])->name('signals');
+// API маршруты для сигналов
+Route::middleware('auth')->group(function () {
+    Route::post('/api/signals/generate', [SignalsController::class, 'generateSignal'])->name('api.signals.generate');
+    Route::get('/api/signals/stats', [SignalsController::class, 'getStats'])->name('api.signals.stats');
+});
 
 // Временный маршрут для выполнения миграций (УДАЛИТЬ ПОСЛЕ ИСПОЛЬЗОВАНИЯ!)
 Route::get('/run-migrations', function () {

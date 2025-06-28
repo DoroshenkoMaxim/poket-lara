@@ -228,14 +228,14 @@
 
 <!-- Стили -->
 <style>
-    /* Отключение всех анимаций и эффектов */
-    * {
+    /* Отключение анимаций и эффектов только для контейнера сигналов */
+    .container-fluid .main-card *:not(.dropdown-menu):not(.dropdown-item):not(.navbar *) {
         transition: none !important;
         animation: none !important;
         transform: none !important;
     }
 
-    .btn:hover, .btn:focus, .btn:active,
+    .main-card .btn:hover, .main-card .btn:focus, .main-card .btn:active,
     .filter-btn:hover, .filter-btn:focus, .filter-btn:active,
     .currency-btn:hover, .currency-btn:focus, .currency-btn:active,
     .timeframe-btn:hover, .timeframe-btn:focus, .timeframe-btn:active,

@@ -334,7 +334,6 @@
         border-radius: 15px;
         position: relative;
         overflow: hidden;
-        transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -342,8 +341,7 @@
     }
 
     .filter-btn:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
 
     .filter-btn.active {
@@ -377,12 +375,10 @@
         font-size: 1.2rem;
         font-weight: 600;
         box-shadow: 0 5px 15px rgba(0,200,81,0.3);
-        transition: all 0.3s ease;
     }
 
     #findSignalBtn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0,200,81,0.4);
+        box-shadow: 0 5px 15px rgba(0,200,81,0.4);
     }
 
     .loading-animation {
@@ -427,7 +423,7 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 10px;
-        animation: pulse 2s infinite;
+
     }
 
     .direction-icon i {
@@ -496,7 +492,7 @@
         font-size: 1.3rem;
         font-weight: 700;
         text-transform: uppercase;
-        animation: bounce 1s ease-in-out;
+
     }
 
     .result-badge.win {
@@ -515,11 +511,9 @@
         height: 80px;
         position: relative;
         overflow: hidden;
-        transition: all 0.3s ease;
     }
 
     .currency-btn:hover, .timeframe-btn:hover {
-        transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
 
@@ -534,35 +528,6 @@
         font-weight: 600;
     }
 
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
-    }
-
-    .fade-in {
-        animation: fadeIn 0.5s ease-in;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .zoom-in {
-        animation: zoomIn 0.5s ease-out;
-    }
-
-    @keyframes zoomIn {
-        from { opacity: 0; transform: scale(0.8); }
-        to { opacity: 1; transform: scale(1); }
-    }
 
     /* Кнопки действий */
     .action-btn {
@@ -570,7 +535,6 @@
         border-radius: 15px;
         position: relative;
         overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -586,8 +550,7 @@
     }
 
     .action-btn:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         text-decoration: none;
         color: white;
     }
@@ -824,7 +787,6 @@
             // Скрыть загрузку и показать результат
             loadingAnimation.classList.add('d-none');
             signalResult.classList.remove('d-none');
-            signalResult.classList.add('fade-in');
 
             this.showToast('✅ Сигнал найден!', 'success');
             this.playSound('notification');
@@ -1030,7 +992,6 @@
             resultBadge.querySelector('i').className = `fas fa-${isWin ? 'trophy' : 'times-circle'}`;
 
             tradeResult.classList.remove('d-none');
-            tradeResult.classList.add('zoom-in');
 
             // Звуковые эффекты
             this.playSound(isWin ? 'win' : 'lose');
@@ -1077,31 +1038,7 @@
         }
 
         createConfetti() {
-            const colors = ['#667eea', '#764ba2', '#00c851', '#ffa726', '#26c6da'];
-            
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.style.cssText = `
-                    position: fixed;
-                    width: 10px;
-                    height: 10px;
-                    background: ${colors[Math.floor(Math.random() * colors.length)]};
-                    top: -10px;
-                    left: ${Math.random() * 100}vw;
-                    z-index: 9999;
-                    border-radius: 50%;
-                `;
-                
-                document.body.appendChild(confetti);
-                
-                confetti.animate([
-                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
-                    { transform: `translateY(100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
-                ], {
-                    duration: 3000 + Math.random() * 2000,
-                    easing: 'ease-out'
-                }).onfinish = () => confetti.remove();
-            }
+            // Конфетти отключено для экономии ресурсов
         }
 
         showToast(message, type = 'info') {
@@ -1118,7 +1055,6 @@
                 box-shadow: 0 8px 25px rgba(0,0,0,0.3);
                 z-index: 9999;
                 transform: translateX(100%);
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 font-weight: 600;
                 font-size: 0.9rem;
                 backdrop-filter: blur(10px);
@@ -1128,13 +1064,10 @@
 
             document.body.appendChild(toast);
 
-            setTimeout(() => {
-                toast.style.transform = 'translateX(0)';
-            }, 100);
+            toast.style.transform = 'translateX(0)';
 
             setTimeout(() => {
-                toast.style.transform = 'translateX(100%)';
-                setTimeout(() => toast.remove(), 300);
+                toast.remove();
             }, 4000);
         }
 
@@ -1232,19 +1165,7 @@
             signalGenerator.showToast('🚀 Система торговых сигналов готова к работе!', 'info');
         }, 1000);
 
-        // Добавление эффекта параллакса для карточек
-        document.addEventListener('mousemove', (e) => {
-            const cards = document.querySelectorAll('.filter-btn, .main-card');
-            const mouseX = e.clientX / window.innerWidth;
-            const mouseY = e.clientY / window.innerHeight;
-            
-            cards.forEach((card, index) => {
-                const xOffset = (mouseX - 0.5) * 5 * (index + 1);
-                const yOffset = (mouseY - 0.5) * 5 * (index + 1);
-                
-                card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-            });
-        });
+        // Параллакс эффект отключен для экономии ресурсов
 
         // Добавление hover эффектов к кнопкам
         document.querySelectorAll('.filter-btn, .currency-btn, .timeframe-btn').forEach(btn => {
@@ -1255,34 +1176,9 @@
             });
         });
 
-        // Анимация появления элементов
-        const animateElements = () => {
-            const elements = document.querySelectorAll('.filter-btn, .user-info-card, .main-card');
-            elements.forEach((el, index) => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(50px)';
-                
-                setTimeout(() => {
-                    el.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, index * 150);
-            });
-        };
+        // Анимация появления отключена для экономии ресурсов
 
-        // Запуск анимации появления
-        setTimeout(animateElements, 300);
-
-        // Добавление пульсации к кнопке поиска сигнала
-        const findBtn = document.getElementById('findSignalBtn');
-        setInterval(() => {
-            if (!findBtn.disabled) {
-                findBtn.style.transform = 'scale(1.02)';
-                setTimeout(() => {
-                    findBtn.style.transform = 'scale(1)';
-                }, 100);
-            }
-        }, 3000);
+        // Пульсация кнопки отключена для экономии ресурсов
 
         // Горячие клавиши
         document.addEventListener('keydown', (e) => {

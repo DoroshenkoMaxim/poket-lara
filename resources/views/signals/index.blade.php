@@ -35,13 +35,9 @@
 
                     <!-- Кнопка поиска сигнала -->
                     <div class="text-center mb-4">
-                        <button type="button" class="btn btn-success btn-lg px-5 py-3 me-3" id="findSignalBtn">
+                        <button type="button" class="btn btn-success btn-lg px-5 py-3" id="findSignalBtn">
                             <i class="fas fa-search"></i>
                             <span class="btn-text">Найти сигнал</span>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
-                            <i class="fas fa-eraser"></i>
-                            <span class="btn-text">Сбросить</span>
                         </button>
                     </div>
 
@@ -81,6 +77,14 @@
                         </div>
                     </div>
 
+                    </div>
+
+                    <!-- Кнопка сброса -->
+                    <div class="text-center mt-4">
+                        <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
+                            <i class="fas fa-eraser"></i>
+                            <span class="btn-text">Сбросить</span>
+                        </button>
                     </div>
 
                     <!-- Информационный блок -->
@@ -254,10 +258,10 @@
     }
 
     .filter-btn {
-        height: 100px;
-        border-radius: 15px;
-        position: relative;
-        overflow: hidden;
+        border-radius: 25px;
+        padding: 20px 30px;
+        font-size: 1.2rem;
+        font-weight: 600;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -295,6 +299,7 @@
         border-radius: 25px;
         font-size: 1.2rem;
         font-weight: 600;
+        display: none;
     }
 
     .loading-animation {
@@ -506,26 +511,30 @@
         }
 
         /* Адаптивность кнопок поиска и сброса на мобильных */
-        #findSignalBtn, #clearFiltersBtn {
+        #findSignalBtn {
             font-size: 1rem;
             padding: 12px 20px !important;
             margin-bottom: 10px;
             display: block;
             width: 100%;
+            margin-right: 0 !important;
         }
 
-        #findSignalBtn {
-            margin-right: 0 !important;
+        #clearFiltersBtn {
+            font-size: 1rem;
+            padding: 12px 20px !important;
+            margin-bottom: 10px;
+            width: 100%;
         }
         
         /* Компактные кнопки фильтров для мобильных */
         .filter-btn {
-            height: 60px;
-            padding: 10px;
+            padding: 15px 20px;
+            font-size: 1rem;
         }
         
         .filter-btn i {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
         
         /* Отступ между фильтрами на мобильных */
@@ -560,6 +569,7 @@
             this.loadFromStorage();
             this.bindEvents();
             this.restoreSignal();
+            this.updateClearButtonVisibility();
         }
 
         bindEvents() {
@@ -593,13 +603,27 @@
         selectCurrency(currency) {
             this.selectedCurrency = currency;
             this.updateFilterButtons();
+            this.updateClearButtonVisibility();
             this.saveToStorage();
         }
 
         selectTimeframe(timeframe) {
             this.selectedTimeframe = timeframe;
             this.updateFilterButtons();
+            this.updateClearButtonVisibility();
             this.saveToStorage();
+        }
+
+        updateClearButtonVisibility() {
+            const clearBtn = document.getElementById('clearFiltersBtn');
+            const hasFilters = this.selectedCurrency || this.selectedTimeframe;
+            const hasSignal = this.lastSignal;
+            
+            if (hasFilters || hasSignal) {
+                clearBtn.style.display = 'inline-block';
+            } else {
+                clearBtn.style.display = 'none';
+            }
         }
 
         saveToStorage() {
@@ -652,6 +676,8 @@
                     findBtn.disabled = false;
                     findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
                 }
+                
+                this.updateClearButtonVisibility();
             }
         }
 
@@ -670,6 +696,7 @@
             
             // Обновить интерфейс
             this.updateFilterButtons();
+            this.updateClearButtonVisibility();
             
             // Скрыть все результаты
             const loadingAnimation = document.getElementById('loadingAnimation');
@@ -732,6 +759,7 @@
             // Сгенерировать сигнал
             const signal = this.generateSignal();
             this.lastSignal = signal;
+            this.updateClearButtonVisibility();
             this.saveToStorage();
             this.displaySignal(signal);
 

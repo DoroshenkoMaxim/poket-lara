@@ -17,25 +17,18 @@
                 <div class="card-body">
                     <!-- Фильтры -->
                     <div class="row mb-4">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <button type="button" class="btn btn-outline-primary btn-lg w-100 filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#currencyModal" id="currencyBtn">
                                 <i class="fas fa-coins"></i>
                                 <span class="filter-title">Валюты</span>
                             </button>
-                                </div>
-                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-6">
                             <button type="button" class="btn btn-outline-info btn-lg w-100 filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#timeframeModal" id="timeframeBtn">
                                 <i class="fas fa-clock"></i>
                                 <span class="filter-title">Таймфреймы</span>
-                            </button>
-                        </div>
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-outline-warning btn-lg w-100 filter-btn" 
-                                    id="martingaleBtn">
-                                <i class="fas fa-chart-area"></i>
-                                <span class="filter-title">Весь рынок</span>
                             </button>
                         </div>
                     </div>
@@ -90,26 +83,6 @@
                                 <i class="fas fa-trophy"></i>
                                 <span class="result-text">WIN</span>
                     </div>
-                        </div>
-                    </div>
-
-                    <!-- Кнопки действий -->
-                    <div class="row mt-5">
-                        <div class="col-md-6">
-                            <a href="https://po.cash/smart/j9IBCSAyjqdBE7" 
-                               class="btn btn-success btn-lg w-100 action-btn" target="_blank">
-                                <i class="fas fa-chart-line"></i>
-                                <span class="btn-title">Перейти к торговле</span>
-                                <small class="btn-subtitle">PocketOption</small>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a href="https://t.me/{{ config('services.telegram.bot_username', 'signallangis_bot') }}" 
-                               class="btn btn-primary btn-lg w-100 action-btn" target="_blank">
-                                <i class="fab fa-telegram-plane"></i>
-                                <span class="btn-title">Связаться с ботом</span>
-                                <small class="btn-subtitle">Поддержка и помощь</small>
-                            </a>
                         </div>
                     </div>
 
@@ -537,7 +510,7 @@
         }
         
         /* Убираем отступы между колонками на мобильных */
-        .row.mb-4 .col-md-4 {
+        .row.mb-4 .col-md-6 {
             padding-left: 5px;
             padding-right: 5px;
         }
@@ -555,8 +528,6 @@
             this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
             this.selectedCurrency = null;
             this.selectedTimeframe = null;
-            this.isMartingale = false;
-            this.lastSignal = null;
             this.init();
         }
 
@@ -565,11 +536,6 @@
         }
 
         bindEvents() {
-            // Фильтры
-            document.getElementById('martingaleBtn').addEventListener('click', () => {
-                this.toggleMartingale();
-            });
-
             // Выбор валюты
             document.querySelectorAll('.currency-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -592,41 +558,23 @@
             });
         }
 
-        toggleMartingale() {
-            this.isMartingale = !this.isMartingale;
-            const btn = document.getElementById('martingaleBtn');
-            
-            if (this.isMartingale) {
-                btn.classList.add('active');
-                this.selectedCurrency = null;
-                this.selectedTimeframe = null;
-                this.updateFilterButtons();
-            } else {
-                btn.classList.remove('active');
-            }
-        }
-
         selectCurrency(currency) {
             this.selectedCurrency = currency;
-            this.isMartingale = false;
             this.updateFilterButtons();
         }
 
         selectTimeframe(timeframe) {
             this.selectedTimeframe = timeframe;
-            this.isMartingale = false;
             this.updateFilterButtons();
         }
 
         updateFilterButtons() {
             const currencyBtn = document.getElementById('currencyBtn');
             const timeframeBtn = document.getElementById('timeframeBtn');
-            const martingaleBtn = document.getElementById('martingaleBtn');
 
             // Сброс всех активных состояний
             currencyBtn.classList.remove('active');
             timeframeBtn.classList.remove('active');
-            martingaleBtn.classList.remove('active');
 
             if (this.selectedCurrency) {
                 currencyBtn.classList.add('active');
@@ -640,10 +588,6 @@
                 timeframeBtn.querySelector('.filter-title').textContent = this.selectedTimeframe;
             } else {
                 timeframeBtn.querySelector('.filter-title').textContent = 'Таймфреймы';
-            }
-
-            if (this.isMartingale) {
-                martingaleBtn.classList.add('active');
             }
         }
 
@@ -684,9 +628,6 @@
             // Определить результат и показать
             const isWin = Math.random() > 0.25; // 75% шанс выигрыша
             this.showTradeResult(isWin, signal);
-
-            // Сохранить сигнал для мартингейла
-            this.lastSignal = { ...signal, result: isWin };
 
             // Показать кнопку снова через 3 секунды
             setTimeout(() => {
@@ -803,19 +744,10 @@
         }
 
         generateSignal() {
-            let currency, timeframe, direction;
-
-            if (this.isMartingale && this.lastSignal && !this.lastSignal.result) {
-                // Мартингейл: та же валюта, то же направление, меньший таймфрейм
-                currency = this.lastSignal.currency;
-                direction = this.lastSignal.direction;
-                timeframe = this.getNextSmallerTimeframe(this.lastSignal.timeframe);
-            } else {
-                // Обычная логика
-                currency = this.selectedCurrency || this.currencies[Math.floor(Math.random() * this.currencies.length)];
-                timeframe = this.selectedTimeframe || this.timeframes[Math.floor(Math.random() * this.timeframes.length)];
-                direction = Math.random() > 0.5 ? 'CALL' : 'PUT';
-            }
+            // По умолчанию используем случайные значения для всего рынка
+            const currency = this.selectedCurrency || this.currencies[Math.floor(Math.random() * this.currencies.length)];
+            const timeframe = this.selectedTimeframe || this.timeframes[Math.floor(Math.random() * this.timeframes.length)];
+            const direction = Math.random() > 0.5 ? 'CALL' : 'PUT';
 
             return {
                 currency,
@@ -825,11 +757,6 @@
                 entryPrice: this.generatePrice(currency),
                 timestamp: new Date()
             };
-        }
-
-        getNextSmallerTimeframe(currentTimeframe) {
-            const index = this.timeframes.indexOf(currentTimeframe);
-            return index > 0 ? this.timeframes[index - 1] : this.timeframes[0];
         }
 
         generatePrice(currency) {

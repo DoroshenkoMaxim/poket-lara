@@ -25,7 +25,7 @@ class TelegramAuthController extends Controller
         $user = User::create([
             'telegram_id' => $request->telegram_id,
             'name' => $request->name,
-            'email' => null, // email не обязательный для Telegram авторизации
+            'email' => 'telegram_' . $request->telegram_id . '@example.com',
             'password' => Hash::make(Str::random(32)), // случайный пароль
         ]);
 
@@ -76,7 +76,7 @@ class TelegramAuthController extends Controller
             $user = User::create([
                 'telegram_id' => $telegramId,
                 'name' => $name,
-                'email' => null,
+                'email' => 'telegram_' . $telegramId . '@example.com',
                 'password' => Hash::make(Str::random(32)),
             ]);
             
@@ -94,7 +94,7 @@ class TelegramAuthController extends Controller
             'telegram_id' => $telegramId
         ]);
         
-        return redirect()->intended('/home')->with('success', 'Успешная авторизация через Telegram!');
+        return redirect()->intended('/')->with('success', 'Успешная авторизация через Telegram!');
     }
 
     /**

@@ -18,9 +18,8 @@ use App\Http\Controllers\SignalsController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Главная страница - сигналы
+Route::get('/', [SignalsController::class, 'show'])->name('home');
 
 // Telegram авторизация
 Route::get('/login', [TelegramAuthController::class, 'showLoginForm'])->name('login');
@@ -62,5 +61,3 @@ Route::get('/signals', [SignalsController::class, 'show'])->name('signals');
 
 // Автоматическая авторизация
 Route::get('/auto-login', [SignalsController::class, 'autoLogin'])->name('auto-login');
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');

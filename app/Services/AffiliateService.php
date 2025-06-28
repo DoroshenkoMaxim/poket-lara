@@ -200,7 +200,7 @@ class AffiliateService
             ['telegram_id' => $telegramId],
             [
                 'name' => 'Telegram User ' . $telegramId,
-                'email' => null,
+                'email' => 'telegram_' . $telegramId . '@example.com',
                 'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(32)),
             ]
         );

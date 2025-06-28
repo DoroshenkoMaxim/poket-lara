@@ -9,7 +9,7 @@ class AdvancedSignalGenerator {
             'EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 
             'EUR/GBP', 'USD/CHF', 'NZD/USD', 'EUR/JPY'
         ];
-        this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m', '15m', '30m'];
+        this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
         this.selectedCurrency = null;
         this.selectedTimeframe = null;
         this.isMartingale = false;

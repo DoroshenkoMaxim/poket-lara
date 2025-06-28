@@ -92,7 +92,7 @@ class SignalsController extends Controller
             'EUR/GBP', 'USD/CHF', 'NZD/USD', 'EUR/JPY'
         ];
         
-        $timeframes = ['5s', '15s', '30s', '1m', '2m', '5m', '15m', '30m'];
+        $timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
         
         $selectedCurrency = $request->get('currency');
         $selectedTimeframe = $request->get('timeframe');
@@ -136,7 +136,7 @@ class SignalsController extends Controller
         // В реальном приложении здесь будет получение статистики из базы данных
         // Пока возвращаем рандомные значения для демонстрации
         $currencies = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'EUR/GBP', 'USD/CHF', 'NZD/USD', 'EUR/JPY'];
-        $timeframes = ['5s', '15s', '30s', '1m', '2m', '5m', '15m', '30m'];
+        $timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
         
         $stats = [
             'general' => ['wins' => rand(60, 90), 'total' => rand(80, 120)],

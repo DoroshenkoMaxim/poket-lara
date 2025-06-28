@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="step-item">
                                     <span class="step-number">2</span>
-                                    <span class="step-text">Получите реферальную ссылку командой /link</span>
+                                    <span class="step-text">Получите реферальную ссылку</span>
                                 </div>
                                 <div class="step-item">
                                     <span class="step-number">3</span>

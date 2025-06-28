@@ -4,28 +4,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <!-- Информация о пользователе -->
-            <div class="card mb-4 user-info-card">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h5 class="text-primary mb-1">
-                                <i class="fas fa-user-circle"></i> 
-                                Добро пожаловать, {{ $user->name }}
-                            </h5>
-                            <p class="text-muted mb-0">
-                                <i class="fab fa-telegram-plane"></i> 
-                                Telegram ID: {{ $telegram_id }}
-                            </p>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <span class="badge bg-success fs-6">
-                                <i class="fas fa-check-circle"></i> Авторизован
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Основной интерфейс -->
             <div class="card main-card">
@@ -43,15 +22,13 @@
                                     data-bs-toggle="modal" data-bs-target="#currencyModal" id="currencyBtn">
                                 <i class="fas fa-coins"></i>
                                 <span class="filter-title">Валюты</span>
-                                <span class="filter-stats">(0% Win)</span>
                             </button>
-                        </div>
+                                </div>
                         <div class="col-md-4">
                             <button type="button" class="btn btn-outline-info btn-lg w-100 filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#timeframeModal" id="timeframeBtn">
                                 <i class="fas fa-clock"></i>
                                 <span class="filter-title">Таймфреймы</span>
-                                <span class="filter-stats">(0% Win)</span>
                             </button>
                         </div>
                         <div class="col-md-4">
@@ -60,7 +37,6 @@
                                 <i class="fas fa-chart-area"></i>
                                 <span class="filter-title">Весь рынок</span>
                                 <span class="filter-subtitle">Мартингейл</span>
-                                <span class="filter-stats">(0% Win)</span>
                             </button>
                         </div>
                     </div>
@@ -104,17 +80,17 @@
                                     <div class="detail-item">
                                         <span class="detail-label">Цена входа:</span>
                                         <span class="detail-value signal-entry-price">1.0856</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
+                    </div>
+
                         <!-- Результат сделки -->
                         <div class="trade-result d-none" id="tradeResult">
                             <div class="result-badge">
                                 <i class="fas fa-trophy"></i>
                                 <span class="result-text">WIN</span>
-                            </div>
+                    </div>
                         </div>
                     </div>
 
@@ -141,7 +117,7 @@
                     <!-- Информационный блок -->
                     <div class="alert alert-info mt-4 info-block" role="alert">
                         <div class="row align-items-center">
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <h6 class="alert-heading mb-2">
                                     <i class="fas fa-lightbulb"></i> Советы по торговле
                                 </h6>
@@ -152,12 +128,7 @@
                                     <li>Следите за экономическими новостями</li>
                                 </ul>
                             </div>
-                            <div class="col-md-4 text-center">
-                                <div class="stats-card">
-                                    <div class="stats-value" id="totalSignals">0</div>
-                                    <div class="stats-label">Сигналов сегодня</div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -182,63 +153,54 @@
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="EUR/USD">
                             <strong>EUR/USD</strong>
                             <small class="d-block text-muted">Euro/Dollar</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="GBP/USD">
                             <strong>GBP/USD</strong>
                             <small class="d-block text-muted">Pound/Dollar</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="USD/JPY">
                             <strong>USD/JPY</strong>
                             <small class="d-block text-muted">Dollar/Yen</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="AUD/USD">
                             <strong>AUD/USD</strong>
                             <small class="d-block text-muted">Aussie/Dollar</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="USD/CAD">
                             <strong>USD/CAD</strong>
                             <small class="d-block text-muted">Dollar/Canadian</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="EUR/GBP">
                             <strong>EUR/GBP</strong>
                             <small class="d-block text-muted">Euro/Pound</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="USD/CHF">
                             <strong>USD/CHF</strong>
                             <small class="d-block text-muted">Dollar/Franc</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="NZD/USD">
                             <strong>NZD/USD</strong>
                             <small class="d-block text-muted">Kiwi/Dollar</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <button class="btn btn-outline-primary w-100 currency-btn" data-currency="EUR/JPY">
                             <strong>EUR/JPY</strong>
                             <small class="d-block text-muted">Euro/Yen</small>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                 </div>
@@ -262,49 +224,41 @@
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="5s">
                             <strong>5 секунд</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="15s">
                             <strong>15 секунд</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="30s">
                             <strong>30 секунд</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="1m">
                             <strong>1 минута</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="2m">
                             <strong>2 минуты</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="5m">
                             <strong>5 минут</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="15m">
                             <strong>15 минут</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="30m">
                             <strong>30 минут</strong>
-                            <span class="stats-badge">0% Win</span>
                         </button>
                     </div>
                 </div>
@@ -315,18 +269,12 @@
 
 <!-- Стили -->
 <style>
-    .user-info-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
+
 
     .main-card {
         border: none;
         border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
     }
 
     .filter-btn {
@@ -340,9 +288,7 @@
         justify-content: center;
     }
 
-    .filter-btn:hover {
-        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    }
+
 
     .filter-btn.active {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -362,11 +308,7 @@
         margin: 0;
     }
 
-    .filter-stats {
-        font-size: 0.8rem;
-        margin-top: 5px;
-        opacity: 0.7;
-    }
+
 
     #findSignalBtn {
         border-radius: 25px;
@@ -374,12 +316,9 @@
         border: none;
         font-size: 1.2rem;
         font-weight: 600;
-        box-shadow: 0 5px 15px rgba(0,200,81,0.3);
     }
 
-    #findSignalBtn:hover {
-        box-shadow: 0 5px 15px rgba(0,200,81,0.4);
-    }
+
 
     .loading-animation {
         text-align: center;
@@ -406,7 +345,6 @@
         display: flex;
         align-items: center;
         gap: 30px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
     }
 
     .signal-direction {
@@ -498,13 +436,11 @@
     .result-badge.win {
         background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
         color: white;
-        box-shadow: 0 5px 15px rgba(0,200,81,0.3);
     }
 
     .result-badge.lose {
         background: linear-gradient(135deg, #ff3d00 0%, #cc0000 100%);
         color: white;
-        box-shadow: 0 5px 15px rgba(255,61,0,0.3);
     }
 
     .currency-btn, .timeframe-btn {
@@ -513,20 +449,9 @@
         overflow: hidden;
     }
 
-    .currency-btn:hover, .timeframe-btn:hover {
-        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    }
 
-    .stats-badge {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: rgba(0,0,0,0.1);
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 0.7rem;
-        font-weight: 600;
-    }
+
+
 
 
     /* Кнопки действий */
@@ -542,18 +467,13 @@
         text-decoration: none;
         background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
         border: none;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     .action-btn.btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
-    .action-btn:hover {
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        text-decoration: none;
-        color: white;
-    }
+
 
     .action-btn i {
         font-size: 1.5rem;
@@ -580,7 +500,7 @@
         border-radius: 15px;
         background: linear-gradient(135deg, rgba(38, 198, 218, 0.1) 0%, rgba(0, 172, 193, 0.1) 100%);
         border-left: 4px solid #26c6da;
-        backdrop-filter: blur(10px);
+
     }
 
     .tips-list {
@@ -602,26 +522,7 @@
         left: 0;
     }
 
-    .stats-card {
-        background: linear-gradient(135deg, #26c6da 0%, #00acc1 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(38, 198, 218, 0.3);
-    }
 
-    .stats-value {
-        font-size: 2.5rem;
-        font-weight: 900;
-        line-height: 1;
-        margin-bottom: 5px;
-    }
-
-    .stats-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
-        font-weight: 600;
-    }
 
     /* Адаптивность для мобильных устройств */
     @media (max-width: 768px) {
@@ -632,14 +533,6 @@
         
         .btn-title {
             font-size: 1rem;
-        }
-        
-        .stats-card {
-            margin-top: 20px;
-        }
-        
-        .stats-value {
-            font-size: 2rem;
         }
     }
 </style>
@@ -657,13 +550,11 @@
             this.selectedTimeframe = null;
             this.isMartingale = false;
             this.lastSignal = null;
-            this.stats = this.loadStats();
             this.init();
         }
 
         init() {
             this.bindEvents();
-            this.updateStatsDisplay();
         }
 
         bindEvents() {
@@ -676,7 +567,7 @@
             document.querySelectorAll('.currency-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     this.selectCurrency(btn.dataset.currency);
-                    bootstrap.Modal.getInstance(document.getElementById('currencyModal')).hide();
+                    this.closeModal('currencyModal');
                 });
             });
 
@@ -684,7 +575,7 @@
             document.querySelectorAll('.timeframe-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     this.selectTimeframe(btn.dataset.timeframe);
-                    bootstrap.Modal.getInstance(document.getElementById('timeframeModal')).hide();
+                    this.closeModal('timeframeModal');
                 });
             });
 
@@ -703,29 +594,21 @@
                 this.selectedCurrency = null;
                 this.selectedTimeframe = null;
                 this.updateFilterButtons();
-                this.showToast('⚡ Режим мартингейла активирован', 'warning');
             } else {
                 btn.classList.remove('active');
-                this.showToast('ℹ️ Режим мартингейла отключен', 'info');
             }
-            
-            this.playSound('notification');
         }
 
         selectCurrency(currency) {
             this.selectedCurrency = currency;
             this.isMartingale = false;
             this.updateFilterButtons();
-            this.showToast(`💱 Выбрана валютная пара: ${currency}`, 'success');
-            this.playSound('notification');
         }
 
         selectTimeframe(timeframe) {
             this.selectedTimeframe = timeframe;
             this.isMartingale = false;
             this.updateFilterButtons();
-            this.showToast(`⏱️ Выбран таймфрейм: ${timeframe}`, 'success');
-            this.playSound('notification');
         }
 
         updateFilterButtons() {
@@ -772,7 +655,6 @@
             
             // Звук начала поиска
             this.playSound('start');
-            this.showToast('🔍 Поиск сигнала...', 'info');
             
             // Показать сообщения поиска
             this.showSearchMessages();
@@ -787,8 +669,10 @@
             // Скрыть загрузку и показать результат
             loadingAnimation.classList.add('d-none');
             signalResult.classList.remove('d-none');
+            
+            // Скрыть кнопку поиска сигнала
+            findBtn.style.display = 'none';
 
-            this.showToast('✅ Сигнал найден!', 'success');
             this.playSound('notification');
 
             // Ждем завершения торговли с индикатором прогресса
@@ -799,16 +683,15 @@
             const isWin = Math.random() > 0.25; // 75% шанс выигрыша
             this.showTradeResult(isWin, signal);
 
-            // Обновить статистику
-            this.updateStats(signal, isWin);
-            this.updateStatsDisplay();
-
             // Сохранить сигнал для мартингейла
             this.lastSignal = { ...signal, result: isWin };
 
-            // Вернуть кнопку в исходное состояние
-            findBtn.disabled = false;
-            findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
+            // Показать кнопку снова через 3 секунды
+            setTimeout(() => {
+                findBtn.style.display = 'inline-block';
+                findBtn.disabled = false;
+                findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
+            }, 3000);
         }
 
         showSearchMessages() {
@@ -995,12 +878,6 @@
 
             // Звуковые эффекты
             this.playSound(isWin ? 'win' : 'lose');
-            
-            // Показать уведомление
-            this.showToast(
-                isWin ? `🎉 Выигрыш! ${signal.currency} ${signal.direction}` : `😞 Проигрыш. ${signal.currency} ${signal.direction}`,
-                isWin ? 'success' : 'danger'
-            );
 
             // Создать конфетти для выигрыша
             if (isWin) {
@@ -1041,45 +918,7 @@
             // Конфетти отключено для экономии ресурсов
         }
 
-        showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast-notification toast-${type}`;
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                background: ${this.getToastColor(type)};
-                color: white;
-                border-radius: 12px;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-                z-index: 9999;
-                transform: translateX(100%);
-                font-weight: 600;
-                font-size: 0.9rem;
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255,255,255,0.2);
-            `;
-            toast.textContent = message;
 
-            document.body.appendChild(toast);
-
-            toast.style.transform = 'translateX(0)';
-
-            setTimeout(() => {
-                toast.remove();
-            }, 4000);
-        }
-
-        getToastColor(type) {
-            const colors = {
-                'success': 'linear-gradient(135deg, #00c851 0%, #00a040 100%)',
-                'danger': 'linear-gradient(135deg, #ff3d00 0%, #cc0000 100%)',
-                'warning': 'linear-gradient(135deg, #ffa726 0%, #fb8c00 100%)',
-                'info': 'linear-gradient(135deg, #26c6da 0%, #00acc1 100%)'
-            };
-            return colors[type] || colors.info;
-        }
 
         getTimeframeDuration(timeframe) {
             const durations = {
@@ -1090,63 +929,30 @@
             return durations[timeframe] || 60000;
         }
 
-        updateStats(signal, isWin) {
-            const key = this.isMartingale ? 'martingale' : 
-                      this.selectedCurrency ? `currency_${signal.currency}` : 
-                      this.selectedTimeframe ? `timeframe_${signal.timeframe}` : 'general';
 
-            if (!this.stats[key]) {
-                this.stats[key] = { wins: 0, total: 0 };
-            }
-
-            this.stats[key].total++;
-            if (isWin) this.stats[key].wins++;
-
-            this.saveStats();
-        }
-
-        updateStatsDisplay() {
-            // Обновить статистику в кнопках фильтров
-            document.getElementById('martingaleBtn').querySelector('.filter-stats').textContent = 
-                `(${this.getWinRate('martingale')}% Win)`;
-
-            document.getElementById('currencyBtn').querySelector('.filter-stats').textContent = 
-                `(${this.getWinRate('general')}% Win)`;
-
-            document.getElementById('timeframeBtn').querySelector('.filter-stats').textContent = 
-                `(${this.getWinRate('general')}% Win)`;
-
-            // Обновить статистику в модальных окнах
-            document.querySelectorAll('.currency-btn').forEach(btn => {
-                const currency = btn.dataset.currency;
-                const winRate = this.getWinRate(`currency_${currency}`);
-                btn.querySelector('.stats-badge').textContent = `${winRate}% Win`;
-            });
-
-            document.querySelectorAll('.timeframe-btn').forEach(btn => {
-                const timeframe = btn.dataset.timeframe;
-                const winRate = this.getWinRate(`timeframe_${timeframe}`);
-                btn.querySelector('.stats-badge').textContent = `${winRate}% Win`;
-            });
-        }
-
-        getWinRate(key) {
-            const stat = this.stats[key];
-            if (!stat || stat.total === 0) return 0;
-            return Math.round((stat.wins / stat.total) * 100);
-        }
-
-        loadStats() {
-            const saved = localStorage.getItem('signalStats');
-            return saved ? JSON.parse(saved) : {};
-        }
-
-        saveStats() {
-            localStorage.setItem('signalStats', JSON.stringify(this.stats));
-        }
 
         delay(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        closeModal(modalId) {
+            const modalElement = document.getElementById(modalId);
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Принудительно удаляем backdrop и убираем класс modal-open
+            setTimeout(() => {
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, 100);
         }
     }
 
@@ -1159,22 +965,8 @@
 
         // Инициализация генератора сигналов
         const signalGenerator = new SignalGenerator();
-        
-        // Показать приветственное сообщение
-        setTimeout(() => {
-            signalGenerator.showToast('🚀 Система торговых сигналов готова к работе!', 'info');
-        }, 1000);
 
         // Параллакс эффект отключен для экономии ресурсов
-
-        // Добавление hover эффектов к кнопкам
-        document.querySelectorAll('.filter-btn, .currency-btn, .timeframe-btn').forEach(btn => {
-            btn.addEventListener('mouseenter', () => {
-                if (signalGenerator.audioContext) {
-                    signalGenerator.playSound('notification');
-                }
-            });
-        });
 
         // Анимация появления отключена для экономии ресурсов
 

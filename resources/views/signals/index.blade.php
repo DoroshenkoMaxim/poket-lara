@@ -530,10 +530,7 @@
             padding: 10px;
         }
         
-        .filter-btn .filter-title,
-        .filter-btn .filter-subtitle {
-            display: none;
-        }
+      
         
         .filter-btn i {
             font-size: 1.5rem;

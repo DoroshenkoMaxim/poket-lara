@@ -27,19 +27,40 @@ class TelegramBotController extends Controller
         try {
             $update = $request->all();
             
-            // Логируем входящее обновление
-            Log::info('Telegram webhook received', $update);
+            // Детальное логирование входящего webhook
+            Log::info('=== TELEGRAM WEBHOOK RECEIVED ===', [
+                'timestamp' => now(),
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'headers' => $request->headers->all(),
+                'raw_input' => $request->getContent(),
+                'parsed_update' => $update,
+                'request_method' => $request->method(),
+            ]);
             
+            // Проверяем, что это действительно обновление от Telegram
+            if (empty($update)) {
+                Log::warning('Empty webhook update received');
+                return response()->json(['status' => 'ok', 'message' => 'Empty update']);
+            }
+            
+            // Обрабатываем обновление
             $this->processUpdate($update);
             
+            Log::info('Webhook processed successfully');
             return response()->json(['status' => 'ok']);
+            
         } catch (\Exception $e) {
-            Log::error('Telegram webhook error: ' . $e->getMessage(), [
+            Log::error('=== TELEGRAM WEBHOOK ERROR ===', [
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
                 'update' => $request->all(),
                 'trace' => $e->getTraceAsString()
             ]);
             
-            return response()->json(['error' => 'Internal server error'], 500);
+            // Всегда возвращаем 200, чтобы Telegram не повторял запрос
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 200);
         }
     }
 
@@ -60,11 +81,28 @@ class TelegramBotController extends Controller
      */
     private function processMessage(array $message): void
     {
-        $chatId = $message['chat']['id'];
+        $chatId = $message['chat']['id'] ?? null;
         $text = $message['text'] ?? '';
         $firstName = $message['from']['first_name'] ?? 'Пользователь';
+        $userId = $message['from']['id'] ?? null;
+        
+        Log::info('Processing message', [
+            'chat_id' => $chatId,
+            'user_id' => $userId,
+            'text' => $text,
+            'first_name' => $firstName,
+            'full_message' => $message
+        ]);
 
-        switch ($text) {
+        if (!$chatId) {
+            Log::error('No chat_id in message', ['message' => $message]);
+            return;
+        }
+
+        $command = trim($text);
+        Log::info("Processing command: {$command}");
+
+        switch ($command) {
             case '/start':
                 $this->handleStartCommand($chatId, $firstName);
                 break;
@@ -88,32 +126,68 @@ class TelegramBotController extends Controller
      */
     private function handleStartCommand(int $chatId, string $firstName): void
     {
-        // Генерируем партнерскую ссылку
-        $linkData = $this->affiliateService->generateAffiliateLink($chatId);
-        
-        $message = "🎉 <b>Добро пожаловать, {$firstName}!</b>\n\n";
-        $message .= "🎯 Это бот для получения партнерских ссылок PocketOption и доступа к торговым сигналам.\n\n";
-        $message .= "📝 <b>Ваша персональная ссылка для регистрации:</b>\n";
-        $message .= $linkData['affiliate_link'] . "\n\n";
-        $message .= "✅ <b>Что делать дальше:</b>\n";
-        $message .= "1️⃣ Перейдите по ссылке выше\n";
-        $message .= "2️⃣ Зарегистрируйтесь на PocketOption\n";
-        $message .= "3️⃣ Получите доступ к сигналам автоматически\n\n";
-        $message .= "💰 Бонус при регистрации: <b>WELCOME50</b>\n";
-        $message .= "⏰ Доступ к сигналам: <b>24 часа</b> после регистрации";
+        try {
+            Log::info("=== HANDLING /START COMMAND ===", [
+                'chat_id' => $chatId,
+                'first_name' => $firstName
+            ]);
 
-        // Создаем кнопки
-        $keyboard = $this->telegramBot->createInlineKeyboard([
-            [
-                ['text' => '🚀 Зарегистрироваться', 'url' => $linkData['affiliate_link']]
-            ],
-            [
-                ['text' => '🔗 Получить новую ссылку', 'callback_data' => 'new_link'],
-                ['text' => '❓ Помощь', 'callback_data' => 'help']
-            ]
-        ]);
+            // Генерируем партнерскую ссылку
+            $linkData = $this->affiliateService->generateAffiliateLink($chatId);
+            Log::info("Affiliate link generated", ['link_data' => $linkData]);
+            
+            $message = "🎉 <b>Добро пожаловать, {$firstName}!</b>\n\n";
+            $message .= "🎯 Это бот для получения партнерских ссылок PocketOption и доступа к торговым сигналам.\n\n";
+            $message .= "📝 <b>Ваша персональная ссылка для регистрации:</b>\n";
+            $message .= $linkData['affiliate_link'] . "\n\n";
+            $message .= "✅ <b>Что делать дальше:</b>\n";
+            $message .= "1️⃣ Перейдите по ссылке выше\n";
+            $message .= "2️⃣ Зарегистрируйтесь на PocketOption\n";
+            $message .= "3️⃣ Получите доступ к сигналам автоматически\n\n";
+            $message .= "💰 Бонус при регистрации: <b>WELCOME50</b>\n";
+            $message .= "⏰ Доступ к сигналам: <b>24 часа</b> после регистрации";
 
-        $this->telegramBot->sendMessage($chatId, $message, $keyboard);
+            // Создаем кнопки
+            $keyboard = $this->telegramBot->createInlineKeyboard([
+                [
+                    ['text' => '🚀 Зарегистрироваться', 'url' => $linkData['affiliate_link']]
+                ],
+                [
+                    ['text' => '🔗 Получить новую ссылку', 'callback_data' => 'new_link'],
+                    ['text' => '❓ Помощь', 'callback_data' => 'help']
+                ]
+            ]);
+
+            Log::info("Sending start message", [
+                'chat_id' => $chatId,
+                'message_length' => strlen($message),
+                'keyboard' => $keyboard
+            ]);
+
+            $result = $this->telegramBot->sendMessage($chatId, $message, $keyboard);
+            
+            Log::info("Start message sent", [
+                'chat_id' => $chatId,
+                'result' => $result
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("=== ERROR IN /START COMMAND ===", [
+                'chat_id' => $chatId,
+                'first_name' => $firstName,
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Отправляем простое сообщение об ошибке
+            try {
+                $this->telegramBot->sendMessage($chatId, "❌ Произошла ошибка. Попробуйте еще раз или обратитесь к администратору.");
+            } catch (\Exception $fallbackError) {
+                Log::error("Failed to send error message", ['error' => $fallbackError->getMessage()]);
+            }
+        }
     }
 
     /**
@@ -189,17 +263,54 @@ class TelegramBotController extends Controller
      */
     private function processCallbackQuery(array $callbackQuery): void
     {
-        $chatId = $callbackQuery['message']['chat']['id'];
-        $data = $callbackQuery['data'];
+        try {
+            $chatId = $callbackQuery['message']['chat']['id'] ?? null;
+            $data = $callbackQuery['data'] ?? null;
+            $callbackQueryId = $callbackQuery['id'] ?? null;
 
-        switch ($data) {
-            case 'new_link':
-                $this->handleLinkCommand($chatId);
-                break;
-                
-            case 'help':
-                $this->handleHelpCommand($chatId);
-                break;
+            Log::info("=== PROCESSING CALLBACK QUERY ===", [
+                'chat_id' => $chatId,
+                'callback_data' => $data,
+                'callback_query_id' => $callbackQueryId,
+                'full_callback' => $callbackQuery
+            ]);
+
+            if (!$chatId || !$data) {
+                Log::error("Missing required callback data", [
+                    'chat_id' => $chatId,
+                    'data' => $data,
+                    'callback_query' => $callbackQuery
+                ]);
+                return;
+            }
+
+            // Отвечаем на callback query (убираем loading)
+            if ($callbackQueryId) {
+                $this->telegramBot->answerCallbackQuery($callbackQueryId);
+            }
+
+            switch ($data) {
+                case 'new_link':
+                    Log::info("Processing new_link callback");
+                    $this->handleLinkCommand($chatId);
+                    break;
+                    
+                case 'help':
+                    Log::info("Processing help callback");
+                    $this->handleHelpCommand($chatId);
+                    break;
+                    
+                default:
+                    Log::warning("Unknown callback data", ['data' => $data]);
+                    break;
+            }
+
+        } catch (\Exception $e) {
+            Log::error("=== ERROR IN CALLBACK QUERY ===", [
+                'error' => $e->getMessage(),
+                'callback_query' => $callbackQuery,
+                'trace' => $e->getTraceAsString()
+            ]);
         }
     }
 
@@ -236,7 +347,112 @@ class TelegramBotController extends Controller
         
         return response()->json([
             'bot_info' => $botInfo,
-            'webhook_info' => $webhookInfo
+            'webhook_info' => $webhookInfo,
+            'current_domain' => request()->getHost(),
+            'expected_webhook_url' => url('/telegram/webhook'),
+            'login_auth_url' => url('/telegram/auth'),
         ]);
+    }
+
+    /**
+     * Переустановить webhook с правильным доменом
+     */
+    public function reinstallWebhook(): JsonResponse
+    {
+        // Сначала удаляем старый webhook
+        $this->telegramBot->deleteWebhook();
+        
+        // Устанавливаем новый с текущим доменом
+        $webhookUrl = url('/telegram/webhook');
+        $result = $this->telegramBot->setWebhook($webhookUrl);
+        
+        return response()->json([
+            'webhook_deleted_and_reinstalled' => true,
+            'new_webhook_url' => $webhookUrl,
+            'result' => $result,
+            'bot_info' => $this->telegramBot->getMe(),
+            'webhook_info' => $this->telegramBot->getWebhookInfo(),
+        ]);
+    }
+
+    /**
+     * Полная очистка и переустановка webhook
+     */
+    public function cleanAndSetupWebhook(): JsonResponse
+    {
+        try {
+            // 1. Получаем текущую информацию
+            $currentWebhook = $this->telegramBot->getWebhookInfo();
+            
+            // 2. Удаляем существующий webhook
+            $deleteResult = $this->telegramBot->deleteWebhook();
+            
+            // 3. Ждем немного
+            sleep(2);
+            
+            // 4. Устанавливаем новый webhook
+            $webhookUrl = url('/telegram/webhook');
+            $setResult = $this->telegramBot->setWebhook($webhookUrl);
+            
+            // 5. Проверяем результат
+            $newWebhook = $this->telegramBot->getWebhookInfo();
+            
+            // 6. Тестируем отправкой сообщения боту самому себе
+            $botInfo = $this->telegramBot->getMe();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Webhook полностью переустановлен',
+                'steps' => [
+                    'old_webhook' => $currentWebhook,
+                    'delete_result' => $deleteResult,
+                    'set_result' => $setResult,
+                    'new_webhook' => $newWebhook,
+                ],
+                'bot_info' => $botInfo,
+                'webhook_url' => $webhookUrl,
+                'test_url' => url('/telegram/test-webhook'),
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
+
+    /**
+     * Тестовый метод для проверки webhook
+     */
+    public function testWebhook(): JsonResponse
+    {
+        try {
+            // Отправляем тестовое сообщение в лог
+            \Log::info('Webhook test called', [
+                'timestamp' => now(),
+                'ip' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Webhook endpoint is working',
+                'timestamp' => now(),
+                'server_info' => [
+                    'php_version' => PHP_VERSION,
+                    'laravel_version' => app()->version(),
+                    'server_ip' => request()->server('SERVER_ADDR'),
+                    'remote_ip' => request()->ip(),
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 } 

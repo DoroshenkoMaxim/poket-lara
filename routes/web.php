@@ -24,7 +24,8 @@ Route::get('/', function () {
 
 // Telegram авторизация
 Route::get('/login', [TelegramAuthController::class, 'showLoginForm'])->name('login');
-Route::post('/telegram/auth', [TelegramAuthController::class, 'login'])->name('telegram.auth');
+Route::get('/telegram/auth', [TelegramAuthController::class, 'login'])->name('telegram.auth');
+Route::post('/telegram/auth', [TelegramAuthController::class, 'login']);
 Route::post('/telegram/register', [TelegramAuthController::class, 'register'])->name('telegram.register');
 
 // Выход из системы
@@ -36,7 +37,13 @@ Route::post('/logout', function () {
 // Telegram Bot маршруты
 Route::post('/telegram/webhook', [TelegramBotController::class, 'webhook'])->name('telegram.webhook');
 Route::get('/telegram/setup', [TelegramBotController::class, 'setWebhook'])->name('telegram.setup');
+Route::get('/telegram/reinstall', [TelegramBotController::class, 'reinstallWebhook'])->name('telegram.reinstall');
+Route::get('/telegram/clean-setup', [TelegramBotController::class, 'cleanAndSetupWebhook'])->name('telegram.clean-setup');
+Route::get('/telegram/test-webhook', [TelegramBotController::class, 'testWebhook'])->name('telegram.test-webhook');
 Route::get('/telegram/info', [TelegramBotController::class, 'getBotInfo'])->name('telegram.info');
+Route::get('/telegram/diagnostics', function () {
+    return view('telegram.diagnostics');
+})->name('telegram.diagnostics');
 
 // Обработка постбеков от PocketOption
 Route::get('/postback', [PostbackController::class, 'handlePostback'])->name('postback');

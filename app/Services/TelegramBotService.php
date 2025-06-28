@@ -101,6 +101,26 @@ class TelegramBotService
     }
 
     /**
+     * Ответить на callback query
+     */
+    public function answerCallbackQuery(string $callbackQueryId, string $text = '', bool $showAlert = false): ?array
+    {
+        $params = [
+            'callback_query_id' => $callbackQueryId,
+        ];
+
+        if (!empty($text)) {
+            $params['text'] = $text;
+        }
+
+        if ($showAlert) {
+            $params['show_alert'] = true;
+        }
+
+        return $this->makeRequest('answerCallbackQuery', $params);
+    }
+
+    /**
      * Выполнить запрос к API
      */
     private function makeRequest(string $method, array $params = []): ?array

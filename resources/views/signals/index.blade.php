@@ -285,10 +285,29 @@
 
     #findSignalBtn {
         border-radius: 25px;
-        background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
-        border: none;
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
+        border: none !important;
         font-size: 1.2rem;
         font-weight: 600;
+        color: white !important;
+    }
+
+    #findSignalBtn:hover,
+    #findSignalBtn:focus,
+    #findSignalBtn:active,
+    #findSignalBtn.focus,
+    #findSignalBtn.active {
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
+        border: none !important;
+        color: white !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    #findSignalBtn:disabled {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+        color: white !important;
+        opacity: 0.8;
     }
 
     #clearFiltersBtn {

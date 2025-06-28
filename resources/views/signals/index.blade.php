@@ -853,7 +853,7 @@
             // По умолчанию используем случайные значения для всего рынка
             const currency = this.selectedCurrency || this.currencies[Math.floor(Math.random() * this.currencies.length)];
             const timeframe = this.selectedTimeframe || this.timeframes[Math.floor(Math.random() * this.timeframes.length)];
-            const direction = Math.random() > 0.5 ? 'ВВЕРХ' : 'ВНИЗ';
+            const direction = Math.random() > 0.5 ? 'CALL' : 'PUT';
 
             return {
                 currency,

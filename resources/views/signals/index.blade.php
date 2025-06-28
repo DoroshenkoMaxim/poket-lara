@@ -269,6 +269,19 @@
 
 <!-- Стили -->
 <style>
+    /* Отключение всех hover эффектов */
+    .btn:hover, .btn:focus, .btn:active,
+    .filter-btn:hover, .filter-btn:focus, .filter-btn:active,
+    .currency-btn:hover, .currency-btn:focus, .currency-btn:active,
+    .timeframe-btn:hover, .timeframe-btn:focus, .timeframe-btn:active,
+    .action-btn:hover, .action-btn:focus, .action-btn:active {
+        transform: none !important;
+        box-shadow: none !important;
+        border-color: inherit !important;
+        background-color: inherit !important;
+        background: inherit !important;
+        color: inherit !important;
+    }
 
 
     .main-card {
@@ -533,6 +546,27 @@
         
         .btn-title {
             font-size: 1rem;
+        }
+        
+        /* Компактные кнопки фильтров для мобильных */
+        .filter-btn {
+            height: 60px;
+            padding: 10px;
+        }
+        
+        .filter-btn .filter-title,
+        .filter-btn .filter-subtitle {
+            display: none;
+        }
+        
+        .filter-btn i {
+            font-size: 1.5rem;
+        }
+        
+        /* Убираем отступы между колонками на мобильных */
+        .row.mb-4 .col-md-4 {
+            padding-left: 5px;
+            padding-right: 5px;
         }
     }
 </style>

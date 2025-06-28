@@ -100,7 +100,7 @@ class SignalsController extends Controller
             'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
         ];
         
-        $timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
+        $timeframes = ['30s', '1m', '2m', '3m', '4m', '5m',];
         
         $selectedCurrency = $request->get('currency');
         $selectedTimeframe = $request->get('timeframe');
@@ -155,7 +155,7 @@ class SignalsController extends Controller
             'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
             'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
         ];
-        $timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
+        $timeframes = ['30s', '1m', '2m', '3m', '4m', '5m',];
         
         $stats = [
             'general' => ['wins' => rand(60, 90), 'total' => rand(80, 120)],

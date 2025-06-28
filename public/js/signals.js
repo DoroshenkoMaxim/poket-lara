@@ -17,7 +17,7 @@ class AdvancedSignalGenerator {
             'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
             'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
         ];
-        this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
+        this.timeframes = ['30s', '1m', '2m', '3m', '4m', '5m',];
         this.selectedCurrency = null;
         this.selectedTimeframe = null;
         this.isMartingale = false;

@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\TelegramAuthController;
 use App\Http\Controllers\TelegramBotController;
 use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\SignalsController;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +70,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/signals/stats', [SignalsController::class, 'getStats'])->name('api.signals.stats');
 });
 
+// Маршруты для валют
+use App\Http\Controllers\CurrencyController;
+
+Route::prefix('currencies')->name('currencies.')->group(function () {
+    Route::get('/', [CurrencyController::class, 'index'])->name('index');
+    Route::post('/update-from-pocket-option', [CurrencyController::class, 'updateFromPocketOption'])->name('update');
+    Route::get('/stats', [CurrencyController::class, 'stats'])->name('stats');
+    Route::get('/parse-now', [CurrencyController::class, 'parseNow'])->name('parse-now');
+    Route::get('/best', [CurrencyController::class, 'getBest'])->name('best');
+    Route::get('/{symbol}', [CurrencyController::class, 'show'])->name('show');
+    Route::put('/{symbol}', [CurrencyController::class, 'update'])->name('update-currency');
+});
+
 // Временный маршрут для выполнения миграций (УДАЛИТЬ ПОСЛЕ ИСПОЛЬЗОВАНИЯ!)
 Route::get('/run-migrations', function () {
     try {
@@ -98,6 +113,80 @@ Route::get('/run-migrations', function () {
                 'temp_tokens' => 'Добавлено поле used',
                 'affiliate_links' => 'Добавлены поля first_name, last_name, username, language_code'
             ]
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
+// Тестовый маршрут для создания таблицы валют и тестирования парсинга
+Route::get('/test-currencies', function () {
+    try {
+        // Создаем таблицу валют если её нет
+        if (!Schema::hasTable('currencies')) {
+            Schema::create('currencies', function (Blueprint $table) {
+                $table->id();
+                $table->string('symbol')->unique(); // AED/CNY, USD/EUR и т.д.
+                $table->string('label'); // Полное название валютной пары
+                $table->integer('payout')->nullable(); // Процент выплаты (92, 89 и т.д.)
+                $table->boolean('is_active')->default(true); // Активна ли валютная пара
+                $table->boolean('is_otc')->default(false); // OTC валюта или нет
+                $table->text('flags')->nullable(); // JSON с кодами флагов валют
+                $table->timestamp('last_updated')->nullable(); // Когда обновлялись данные
+                $table->timestamps();
+                
+                $table->index('is_active');
+                $table->index('payout');
+                $table->index('last_updated');
+            });
+        }
+        
+        // Тестируем парсинг
+        $parserService = new \App\Services\PocketOptionParserService();
+        
+        // Создаем тестовые данные из HTML примера
+        $testCurrencies = [
+            [
+                'symbol' => 'AED_CNY',
+                'label' => 'AED/CNY OTC',
+                'payout' => 92,
+                'is_active' => true,
+                'is_otc' => true,
+                'flags' => ['aed', 'cny']
+            ],
+            [
+                'symbol' => 'AUD_CAD',
+                'label' => 'AUD/CAD OTC',
+                'payout' => 92,
+                'is_active' => true,
+                'is_otc' => true,
+                'flags' => ['aud', 'cad']
+            ],
+            [
+                'symbol' => 'EUR_USD',
+                'label' => 'EUR/USD',
+                'payout' => null,
+                'is_active' => false,
+                'is_otc' => false,
+                'flags' => ['eur', 'usd']
+            ]
+        ];
+        
+        foreach ($testCurrencies as $currencyData) {
+            \App\Models\Currency::createOrUpdate($currencyData);
+        }
+        
+        $stats = $parserService->getCurrencyStats();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Таблица валют создана и заполнена тестовыми данными',
+            'stats' => $stats,
+            'test_data' => $testCurrencies
         ]);
         
     } catch (\Exception $e) {

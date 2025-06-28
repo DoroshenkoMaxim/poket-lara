@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Currency;
 use App\Services\AffiliateService;
 
 class SignalsController extends Controller
@@ -14,6 +15,56 @@ class SignalsController extends Controller
     public function __construct(AffiliateService $affiliateService)
     {
         $this->affiliateService = $affiliateService;
+    }
+
+    /**
+     * Получить список активных валют из базы данных
+     */
+    private function getActiveCurrencies(): array
+    {
+        try {
+            // Пытаемся получить валюты из базы данных
+            $currencies = Currency::active()
+                ->orderBy('label')
+                ->pluck('label')
+                ->map(function ($label) {
+                    // Убираем " OTC" из названия для отображения
+                    return str_replace(' OTC', '', $label);
+                })
+                ->unique()
+                ->values()
+                ->toArray();
+
+            // Если валют в базе нет, используем резервный список
+            if (empty($currencies)) {
+                return $this->getFallbackCurrencies();
+            }
+
+            return $currencies;
+        } catch (\Exception $e) {
+            // Если таблица не существует или другая ошибка, используем резервный список
+            \Log::warning('Failed to load currencies from database: ' . $e->getMessage());
+            return $this->getFallbackCurrencies();
+        }
+    }
+
+    /**
+     * Резервный список валют (если база данных недоступна)
+     */
+    private function getFallbackCurrencies(): array
+    {
+        return [
+            'AED/CNY', 'AUD/CAD', 'AUD/CHF', 'AUD/JPY', 'AUD/NZD', 'AUD/USD',
+            'BHD/CNY', 'CAD/CHF', 'CAD/JPY', 'CHF/JPY', 'CHF/NOK',
+            'EUR/AUD', 'EUR/CAD', 'EUR/CHF', 'EUR/GBP', 'EUR/HUF', 'EUR/JPY', 
+            'EUR/NZD', 'EUR/TRY', 'EUR/USD', 'GBP/AUD', 'GBP/CAD', 'GBP/CHF', 
+            'GBP/JPY', 'GBP/USD', 'JOD/CNY', 'KES/USD', 'LBP/USD', 'MAD/USD', 
+            'NGN/USD', 'NZD/JPY', 'NZD/USD', 'OMR/CNY', 'QAR/CNY', 'SAR/CNY', 
+            'TND/USD', 'UAH/USD', 'USD/ARS', 'USD/BDT', 'USD/BRL', 'USD/CAD', 
+            'USD/CHF', 'USD/CLP', 'USD/CNH', 'USD/COP', 'USD/DZD', 'USD/EGP', 
+            'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
+            'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
+        ];
     }
 
     /**
@@ -32,10 +83,13 @@ class SignalsController extends Controller
             
             // Проверяем, что у пользователя есть telegram_id (зарегистрирован через нашу систему)
             if ($user->telegram_id) {
+                $currencies = $this->getActiveCurrencies();
+                
                 return view('signals.index', [
                     'user' => $user,
                     'telegram_id' => $user->telegram_id,
                     'is_authorized' => true,
+                    'currencies' => $currencies,
                 ]);
             }
         }
@@ -87,18 +141,7 @@ class SignalsController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $currencies = [
-            'AED/CNY', 'AUD/CAD', 'AUD/CHF', 'AUD/JPY', 'AUD/NZD', 'AUD/USD',
-            'BHD/CNY', 'CAD/CHF', 'CAD/JPY', 'CHF/JPY', 'CHF/NOK',
-            'EUR/AUD', 'EUR/CAD', 'EUR/CHF', 'EUR/GBP', 'EUR/HUF', 'EUR/JPY', 
-            'EUR/NZD', 'EUR/TRY', 'EUR/USD', 'GBP/AUD', 'GBP/CAD', 'GBP/CHF', 
-            'GBP/JPY', 'GBP/USD', 'JOD/CNY', 'KES/USD', 'LBP/USD', 'MAD/USD', 
-            'NGN/USD', 'NZD/JPY', 'NZD/USD', 'OMR/CNY', 'QAR/CNY', 'SAR/CNY', 
-            'TND/USD', 'UAH/USD', 'USD/ARS', 'USD/BDT', 'USD/BRL', 'USD/CAD', 
-            'USD/CHF', 'USD/CLP', 'USD/CNH', 'USD/COP', 'USD/DZD', 'USD/EGP', 
-            'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
-            'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
-        ];
+        $currencies = $this->getActiveCurrencies();
         
         $timeframes = ['30s', '1m', '2m', '3m', '4m', '5m',];
         
@@ -143,18 +186,7 @@ class SignalsController extends Controller
 
         // В реальном приложении здесь будет получение статистики из базы данных
         // Пока возвращаем рандомные значения для демонстрации
-        $currencies = [
-            'AED/CNY', 'AUD/CAD', 'AUD/CHF', 'AUD/JPY', 'AUD/NZD', 'AUD/USD',
-            'BHD/CNY', 'CAD/CHF', 'CAD/JPY', 'CHF/JPY', 'CHF/NOK',
-            'EUR/AUD', 'EUR/CAD', 'EUR/CHF', 'EUR/GBP', 'EUR/HUF', 'EUR/JPY', 
-            'EUR/NZD', 'EUR/TRY', 'EUR/USD', 'GBP/AUD', 'GBP/CAD', 'GBP/CHF', 
-            'GBP/JPY', 'GBP/USD', 'JOD/CNY', 'KES/USD', 'LBP/USD', 'MAD/USD', 
-            'NGN/USD', 'NZD/JPY', 'NZD/USD', 'OMR/CNY', 'QAR/CNY', 'SAR/CNY', 
-            'TND/USD', 'UAH/USD', 'USD/ARS', 'USD/BDT', 'USD/BRL', 'USD/CAD', 
-            'USD/CHF', 'USD/CLP', 'USD/CNH', 'USD/COP', 'USD/DZD', 'USD/EGP', 
-            'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
-            'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
-        ];
+        $currencies = $this->getActiveCurrencies();
         $timeframes = ['30s', '1m', '2m', '3m', '4m', '5m',];
         
         $stats = [
@@ -177,6 +209,26 @@ class SignalsController extends Controller
         }
 
         return response()->json($stats);
+    }
+
+    /**
+     * API: Получение списка активных валют
+     */
+    public function getCurrencies(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $currencies = $this->getActiveCurrencies();
+        
+        return response()->json([
+            'success' => true,
+            'currencies' => $currencies,
+            'count' => count($currencies),
+            'source' => 'database',
+            'last_updated' => now()->toISOString()
+        ]);
     }
 
     /**

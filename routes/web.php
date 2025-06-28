@@ -68,6 +68,7 @@ Route::get('/auto-login', [SignalsController::class, 'autoLogin'])->name('auto-l
 Route::middleware('auth')->group(function () {
     Route::post('/api/signals/generate', [SignalsController::class, 'generateSignal'])->name('api.signals.generate');
     Route::get('/api/signals/stats', [SignalsController::class, 'getStats'])->name('api.signals.stats');
+    Route::get('/api/signals/currencies', [SignalsController::class, 'getCurrencies'])->name('api.signals.currencies');
 });
 
 // Маршруты для валют
@@ -122,6 +123,37 @@ Route::get('/run-migrations', function () {
         ], 500);
     }
 });
+
+// Защищенный endpoint для автоматического обновления валют
+Route::get('/cron/update-currencies/{secret}', function($secret) {
+    // Проверяем секретный ключ
+    if ($secret !== env('CRON_SECRET', 'your-secret-key-here')) {
+        abort(403, 'Access denied');
+    }
+    
+    try {
+        $service = new \App\Services\PocketOptionParserService();
+        $count = $service->updateCurrenciesInDatabase();
+        $stats = $service->getCurrencyStats();
+        
+        return response()->json([
+            'success' => true,
+            'message' => "Successfully updated {$count} currencies",
+            'updated_count' => $count,
+            'stats' => $stats,
+            'timestamp' => now()->format('Y-m-d H:i:s'),
+            'server_time' => now()->toISOString()
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Cron currency update failed: ' . $e->getMessage());
+        
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'timestamp' => now()->format('Y-m-d H:i:s')
+        ], 500);
+    }
+})->name('cron.currencies.update');
 
 // Тестовый маршрут для создания таблицы валют и тестирования парсинга
 Route::get('/test-currencies', function () {

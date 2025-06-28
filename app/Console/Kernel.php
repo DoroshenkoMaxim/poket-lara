@@ -12,7 +12,18 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Обновление валют каждый день в 00:00
+        $schedule->command('currencies:update')
+                 ->dailyAt('00:00')
+                 ->withoutOverlapping()
+                 ->runInBackground()
+                 ->emailOutputOnFailure('admin@example.com'); // замените на ваш email
+        
+        // Альтернативные варианты расписания:
+        // ->daily() - каждый день в 00:00 (аналогично dailyAt('00:00'))
+        // ->dailyAt('02:30') - каждый день в 02:30
+        // ->weeklyOn(1, '00:00') - каждый понедельник в 00:00
+        // ->monthlyOn(1, '00:00') - первого числа каждого месяца в 00:00
     }
 
     /**

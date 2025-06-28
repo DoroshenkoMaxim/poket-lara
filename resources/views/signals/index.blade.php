@@ -251,16 +251,6 @@
                             <strong>5 минут</strong>
                         </button>
                     </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="15m">
-                            <strong>15 минут</strong>
-                        </button>
-                    </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="30m">
-                            <strong>30 минут</strong>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -565,7 +555,7 @@
                 'EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 
                 'EUR/GBP', 'USD/CHF', 'NZD/USD', 'EUR/JPY'
             ];
-            this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m', '15m', '30m'];
+            this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
             this.selectedCurrency = null;
             this.selectedTimeframe = null;
             this.isMartingale = false;
@@ -895,7 +885,6 @@
             const durations = {
                 '5s': 5000, '15s': 15000, '30s': 30000,
                 '1m': 60000, '2m': 120000, '5m': 300000,
-                '15m': 900000, '30m': 1800000
             };
             return durations[timeframe] || 60000;
         }

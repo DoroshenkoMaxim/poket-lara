@@ -14,7 +14,7 @@ class AdvancedSignalGenerator {
         this.selectedTimeframe = null;
         this.isMartingale = false;
         this.lastSignal = null;
-        this.stats = this.loadStats();
+
         this.audioContext = null;
         this.isGenerating = false;
         this.init();
@@ -23,9 +23,6 @@ class AdvancedSignalGenerator {
     init() {
         this.initAudio();
         this.bindEvents();
-        this.updateStatsDisplay();
-        this.createParticleEffect();
-        this.showWelcomeAnimation();
     }
 
     initAudio() {
@@ -63,60 +60,15 @@ class AdvancedSignalGenerator {
     }
 
     showWelcomeAnimation() {
-        const elements = document.querySelectorAll('.filter-btn, .user-info-card, .main-card');
-        elements.forEach((el, index) => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(50px)';
-            
-            setTimeout(() => {
-                el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-            }, index * 200);
-        });
+        // Анимация отключена для экономии ресурсов
     }
 
     createParticleEffect() {
-        const container = document.querySelector('.main-card');
-        if (!container) return;
-
-        for (let i = 0; i < 5; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.cssText = `
-                position: absolute;
-                width: 4px;
-                height: 4px;
-                background: linear-gradient(45deg, #667eea, #764ba2);
-                border-radius: 50%;
-                opacity: 0.6;
-                pointer-events: none;
-                z-index: 1;
-            `;
-            container.appendChild(particle);
-            this.animateParticle(particle);
-        }
+        // Частицы отключены для экономии ресурсов
     }
 
     animateParticle(particle) {
-        const container = particle.parentElement;
-        const containerRect = container.getBoundingClientRect();
-        
-        const animate = () => {
-            const x = Math.random() * containerRect.width;
-            const y = Math.random() * containerRect.height;
-            const duration = 3000 + Math.random() * 2000;
-            
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            particle.style.transition = `all ${duration}ms linear`;
-            
-            setTimeout(() => {
-                animate();
-            }, duration);
-        };
-        
-        animate();
+        // Анимация частиц отключена для экономии ресурсов
     }
 
     bindEvents() {
@@ -129,7 +81,6 @@ class AdvancedSignalGenerator {
         document.querySelectorAll('.currency-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.selectCurrency(btn.dataset.currency);
-                this.playSound('notification');
                 bootstrap.Modal.getInstance(document.getElementById('currencyModal')).hide();
             });
         });
@@ -138,7 +89,6 @@ class AdvancedSignalGenerator {
         document.querySelectorAll('.timeframe-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.selectTimeframe(btn.dataset.timeframe);
-                this.playSound('notification');
                 bootstrap.Modal.getInstance(document.getElementById('timeframeModal')).hide();
             });
         });
@@ -149,17 +99,10 @@ class AdvancedSignalGenerator {
                 this.findSignal();
             }
         });
-
-        // Hover эффекты
-        this.addHoverEffects();
     }
 
     addHoverEffects() {
-        document.querySelectorAll('.filter-btn, .currency-btn, .timeframe-btn').forEach(btn => {
-            btn.addEventListener('mouseenter', () => {
-                this.playSound('notification');
-            });
-        });
+        // Hover эффекты отключены для экономии ресурсов
     }
 
     toggleMartingale() {
@@ -171,27 +114,21 @@ class AdvancedSignalGenerator {
             this.selectedCurrency = null;
             this.selectedTimeframe = null;
             this.updateFilterButtons();
-            this.showToast('Режим мартингейла активирован', 'warning');
         } else {
             btn.classList.remove('active');
-            this.showToast('Режим мартингейла отключен', 'info');
         }
-        
-        this.playSound('notification');
     }
 
     selectCurrency(currency) {
         this.selectedCurrency = currency;
         this.isMartingale = false;
         this.updateFilterButtons();
-        this.showToast(`Выбрана валютная пара: ${currency}`, 'success');
     }
 
     selectTimeframe(timeframe) {
         this.selectedTimeframe = timeframe;
         this.isMartingale = false;
         this.updateFilterButtons();
-        this.showToast(`Выбран таймфрейм: ${timeframe}`, 'success');
     }
 
     updateFilterButtons() {
@@ -251,9 +188,6 @@ class AdvancedSignalGenerator {
             // Скрыть загрузку и показать результат
             loadingAnimation.classList.add('d-none');
             signalResult.classList.remove('d-none');
-            signalResult.classList.add('fade-in');
-
-            this.showToast('Сигнал найден!', 'success');
 
             // Ждем завершения торговли
             const duration = this.getTimeframeDuration(signal.timeframe);
@@ -263,16 +197,13 @@ class AdvancedSignalGenerator {
             const isWin = Math.random() > 0.25; // 75% шанс выигрыша
             this.showTradeResult(isWin, signal);
 
-            // Обновить статистику
-            this.updateStats(signal, isWin);
-            this.updateStatsDisplay();
+
 
             // Сохранить сигнал для мартингейла
             this.lastSignal = { ...signal, result: isWin };
 
         } catch (error) {
             console.error('Ошибка генерации сигнала:', error);
-            this.showToast('Ошибка при поиске сигнала', 'danger');
         } finally {
             findBtn.disabled = false;
             findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
@@ -453,87 +384,20 @@ class AdvancedSignalGenerator {
         // Звуковое уведомление
         this.playSound(isWin ? 'win' : 'lose');
         
-        // Показать toast уведомление
-        this.showToast(
-            isWin ? `Выигрыш! ${signal.currency} ${signal.direction}` : `Проигрыш. ${signal.currency} ${signal.direction}`,
-            isWin ? 'success' : 'danger'
-        );
 
-        // Создать конфетти для выигрыша
-        if (isWin) {
-            this.createConfetti();
-        }
     }
 
     createConfetti() {
-        const colors = ['#667eea', '#764ba2', '#00c851', '#ffa726', '#26c6da'];
-        
-        for (let i = 0; i < 50; i++) {
-            const confetti = document.createElement('div');
-            confetti.style.cssText = `
-                position: fixed;
-                width: 10px;
-                height: 10px;
-                background: ${colors[Math.floor(Math.random() * colors.length)]};
-                top: -10px;
-                left: ${Math.random() * 100}vw;
-                z-index: 9999;
-                border-radius: 50%;
-            `;
-            
-            document.body.appendChild(confetti);
-            
-            confetti.animate([
-                { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
-                { transform: `translateY(100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
-            ], {
-                duration: 3000 + Math.random() * 2000,
-                easing: 'ease-out'
-            }).onfinish = () => confetti.remove();
-        }
+        // Конфетти отключено для экономии ресурсов
     }
 
     showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast-notification toast-${type}`;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            background: ${this.getToastColor(type)};
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 9999;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            font-weight: 600;
-        `;
-        toast.textContent = message;
-
-        document.body.appendChild(toast);
-
-        // Анимация появления
-        setTimeout(() => {
-            toast.style.transform = 'translateX(0)';
-        }, 100);
-
-        // Автоудаление
-        setTimeout(() => {
-            toast.style.transform = 'translateX(100%)';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        // Уведомления отключены для экономии ресурсов
     }
 
     getToastColor(type) {
-        const colors = {
-            'success': '#00c851',
-            'danger': '#ff3d00',
-            'warning': '#ffa726',
-            'info': '#26c6da'
-        };
-        return colors[type] || colors.info;
+        // Цвета отключены для экономии ресурсов
+        return '#26c6da';
     }
 
     // Остальные методы остаются такими же...
@@ -636,17 +500,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализация генератора сигналов
     window.signalGenerator = new AdvancedSignalGenerator();
 
-    // Добавление эффекта параллакса для карточек
-    document.addEventListener('mousemove', (e) => {
-        const cards = document.querySelectorAll('.filter-btn, .main-card');
-        const mouseX = e.clientX / window.innerWidth;
-        const mouseY = e.clientY / window.innerHeight;
-        
-        cards.forEach((card, index) => {
-            const xOffset = (mouseX - 0.5) * 10 * (index + 1);
-            const yOffset = (mouseY - 0.5) * 10 * (index + 1);
-            
-            card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-        });
-    });
+    // Параллакс эффект отключен для экономии ресурсов
 }); 

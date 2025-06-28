@@ -513,16 +513,6 @@
             <div class="modal-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="5s">
-                            <strong>5 секунд</strong>
-                        </button>
-                    </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="15s">
-                            <strong>15 секунд</strong>
-                        </button>
-                    </div>
-                    <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="30s">
                             <strong>30 секунд</strong>
                         </button>
@@ -535,6 +525,16 @@
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="2m">
                             <strong>2 минуты</strong>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="3m">
+                            <strong>3 минуты</strong>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="4m">
+                            <strong>4 минуты</strong>
                         </button>
                     </div>
                     <div class="col-md-6">

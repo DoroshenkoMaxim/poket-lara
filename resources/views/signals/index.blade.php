@@ -35,9 +35,13 @@
 
                     <!-- Кнопка поиска сигнала -->
                     <div class="text-center mb-4">
-                        <button type="button" class="btn btn-success btn-lg px-5 py-3" id="findSignalBtn">
+                        <button type="button" class="btn btn-success btn-lg px-5 py-3 me-3" id="findSignalBtn">
                             <i class="fas fa-search"></i>
                             <span class="btn-text">Найти сигнал</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
+                            <i class="fas fa-eraser"></i>
+                            <span class="btn-text">Сбросить</span>
                         </button>
                     </div>
 
@@ -77,13 +81,6 @@
                         </div>
                     </div>
 
-                        <!-- Результат сделки -->
-                        <div class="trade-result d-none" id="tradeResult">
-                            <div class="result-badge">
-                                <i class="fas fa-trophy"></i>
-                                <span class="result-text">WIN</span>
-                    </div>
-                        </div>
                     </div>
 
                     <!-- Информационный блок -->
@@ -294,6 +291,12 @@
         font-weight: 600;
     }
 
+    #clearFiltersBtn {
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
     .loading-animation {
         text-align: center;
         padding: 50px 0;
@@ -319,6 +322,33 @@
         display: flex;
         align-items: center;
         gap: 30px;
+        position: relative;
+    }
+
+    .signal-card.win {
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
+    }
+
+    .signal-card.lose {
+        background: linear-gradient(135deg, #ff3d00 0%, #cc0000 100%);
+    }
+
+    .signal-card .result-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.3);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
 
     .signal-direction {
@@ -391,29 +421,7 @@
         font-weight: 600;
     }
 
-    .trade-result {
-        margin-top: 20px;
-        text-align: center;
-    }
 
-    .result-badge {
-        display: inline-block;
-        padding: 15px 30px;
-        border-radius: 25px;
-        font-size: 1.3rem;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    .result-badge.win {
-        background: linear-gradient(135deg, #00c851 0%, #00a040 100%);
-        color: white;
-    }
-
-    .result-badge.lose {
-        background: linear-gradient(135deg, #ff3d00 0%, #cc0000 100%);
-        color: white;
-    }
 
     .currency-btn, .timeframe-btn {
         height: 80px;
@@ -496,6 +504,19 @@
         .btn-title {
             font-size: 1rem;
         }
+
+        /* Адаптивность кнопок поиска и сброса на мобильных */
+        #findSignalBtn, #clearFiltersBtn {
+            font-size: 1rem;
+            padding: 12px 20px !important;
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+        }
+
+        #findSignalBtn {
+            margin-right: 0 !important;
+        }
         
         /* Компактные кнопки фильтров для мобильных */
         .filter-btn {
@@ -531,11 +552,14 @@
             this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
             this.selectedCurrency = null;
             this.selectedTimeframe = null;
+            this.lastSignal = null;
             this.init();
         }
 
         init() {
+            this.loadFromStorage();
             this.bindEvents();
+            this.restoreSignal();
         }
 
         bindEvents() {
@@ -559,16 +583,106 @@
             document.getElementById('findSignalBtn').addEventListener('click', () => {
                 this.findSignal();
             });
+
+            // Сброс фильтров
+            document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+                this.clearFilters();
+            });
         }
 
         selectCurrency(currency) {
             this.selectedCurrency = currency;
             this.updateFilterButtons();
+            this.saveToStorage();
         }
 
         selectTimeframe(timeframe) {
             this.selectedTimeframe = timeframe;
             this.updateFilterButtons();
+            this.saveToStorage();
+        }
+
+        saveToStorage() {
+            try {
+                const data = {
+                    selectedCurrency: this.selectedCurrency,
+                    selectedTimeframe: this.selectedTimeframe,
+                    lastSignal: this.lastSignal
+                };
+                localStorage.setItem('signalFilters', JSON.stringify(data));
+            } catch (e) {
+                console.log('Ошибка сохранения в localStorage:', e);
+            }
+        }
+
+        loadFromStorage() {
+            try {
+                const saved = localStorage.getItem('signalFilters');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    this.selectedCurrency = data.selectedCurrency || null;
+                    this.selectedTimeframe = data.selectedTimeframe || null;
+                    this.lastSignal = data.lastSignal || null;
+                    this.updateFilterButtons();
+                }
+            } catch (e) {
+                console.log('Ошибка загрузки из localStorage:', e);
+            }
+        }
+
+        restoreSignal() {
+            if (this.lastSignal && this.lastSignal.currency) {
+                // Восстановить отображение сигнала
+                this.displaySignal(this.lastSignal);
+                
+                // Скрыть загрузку и показать результат
+                const loadingAnimation = document.getElementById('loadingAnimation');
+                const signalResult = document.getElementById('signalResult');
+                const findBtn = document.getElementById('findSignalBtn');
+                
+                loadingAnimation.classList.add('d-none');
+                signalResult.classList.remove('d-none');
+                
+                // Показать результат если он есть
+                if (this.lastSignal.result !== undefined) {
+                    this.showTradeResult(this.lastSignal.result, this.lastSignal);
+                    
+                    // Если есть результат, значит торговля завершена
+                    findBtn.style.display = 'inline-block';
+                    findBtn.disabled = false;
+                    findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
+                }
+            }
+        }
+
+        clearFilters() {
+            // Очистить все фильтры и сигналы
+            this.selectedCurrency = null;
+            this.selectedTimeframe = null;
+            this.lastSignal = null;
+            
+            // Очистить localStorage
+            try {
+                localStorage.removeItem('signalFilters');
+            } catch (e) {
+                console.log('Ошибка очистки localStorage:', e);
+            }
+            
+            // Обновить интерфейс
+            this.updateFilterButtons();
+            
+            // Скрыть все результаты
+            const loadingAnimation = document.getElementById('loadingAnimation');
+            const signalResult = document.getElementById('signalResult');
+            const findBtn = document.getElementById('findSignalBtn');
+            
+            loadingAnimation.classList.add('d-none');
+            signalResult.classList.add('d-none');
+            
+            // Восстановить кнопку поиска
+            findBtn.style.display = 'inline-block';
+            findBtn.disabled = false;
+            findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
         }
 
         updateFilterButtons() {
@@ -598,13 +712,15 @@
             const findBtn = document.getElementById('findSignalBtn');
             const loadingAnimation = document.getElementById('loadingAnimation');
             const signalResult = document.getElementById('signalResult');
-            const tradeResult = document.getElementById('tradeResult');
+
+            // Очистить предыдущий сигнал
+            this.lastSignal = null;
+            this.saveToStorage();
 
             // Показать загрузку
             findBtn.disabled = true;
             findBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span class="btn-text">Поиск сигнала...</span>';
             signalResult.classList.add('d-none');
-            tradeResult.classList.add('d-none');
             loadingAnimation.classList.remove('d-none');
             
             // Показать сообщения поиска
@@ -615,6 +731,8 @@
 
             // Сгенерировать сигнал
             const signal = this.generateSignal();
+            this.lastSignal = signal;
+            this.saveToStorage();
             this.displaySignal(signal);
 
             // Скрыть загрузку и показать результат
@@ -630,6 +748,8 @@
 
             // Определить результат и показать
             const isWin = Math.random() > 0.25; // 75% шанс выигрыша
+            this.lastSignal.result = isWin;
+            this.saveToStorage();
             this.showTradeResult(isWin, signal);
 
             // Показать кнопку снова через 3 секунды
@@ -778,12 +898,22 @@
         }
 
         displaySignal(signal) {
+            const signalCard = document.querySelector('.signal-card');
             const directionIcon = document.querySelector('.direction-icon');
             const directionText = document.querySelector('.direction-text');
             const signalCurrency = document.querySelector('.signal-currency');
             const signalTime = document.querySelector('.signal-time');
             const signalProbability = document.querySelector('.signal-probability');
             const signalEntryPrice = document.querySelector('.signal-entry-price');
+
+            // Сбросить цвет карточки на исходный
+            signalCard.className = 'signal-card';
+            
+            // Удалить предыдущий значок результата
+            const existingBadge = signalCard.querySelector('.result-badge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
 
             // Направление
             directionIcon.className = `direction-icon ${signal.direction.toLowerCase()}`;
@@ -798,14 +928,25 @@
         }
 
         showTradeResult(isWin, signal) {
-            const tradeResult = document.getElementById('tradeResult');
-            const resultBadge = tradeResult.querySelector('.result-badge');
+            const signalCard = document.querySelector('.signal-card');
             
-            resultBadge.className = `result-badge ${isWin ? 'win' : 'lose'}`;
-            resultBadge.querySelector('.result-text').textContent = isWin ? 'WIN' : 'LOSE';
-            resultBadge.querySelector('i').className = `fas fa-${isWin ? 'trophy' : 'times-circle'}`;
-
-            tradeResult.classList.remove('d-none');
+            // Изменить цвет карточки
+            signalCard.className = `signal-card ${isWin ? 'win' : 'lose'}`;
+            
+            // Добавить значок результата в правый верхний угол
+            const existingBadge = signalCard.querySelector('.result-badge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            const resultBadge = document.createElement('div');
+            resultBadge.className = 'result-badge';
+            resultBadge.innerHTML = `
+                <i class="fas fa-${isWin ? 'trophy' : 'times-circle'}"></i>
+                <span>${isWin ? 'WIN' : 'LOSE'}</span>
+            `;
+            
+            signalCard.appendChild(resultBadge);
         }
 
         getTimeframeDuration(timeframe) {

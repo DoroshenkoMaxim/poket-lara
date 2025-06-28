@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Auth\TelegramAuthController;
 use App\Http\Controllers\TelegramBotController;
 use App\Http\Controllers\PostbackController;
@@ -61,3 +63,43 @@ Route::get('/auto-login', [SignalsController::class, 'autoLogin'])->name('auto-l
 
 // Страница сигналов
 Route::get('/signals', [SignalsController::class, 'show'])->name('signals');
+
+// Временный маршрут для выполнения миграций (УДАЛИТЬ ПОСЛЕ ИСПОЛЬЗОВАНИЯ!)
+Route::get('/run-migrations', function () {
+    try {
+        // Добавляем поле used в temp_tokens
+        if (!Schema::hasColumn('temp_tokens', 'used')) {
+            DB::statement('ALTER TABLE temp_tokens ADD COLUMN used TINYINT(1) NOT NULL DEFAULT 0 AFTER expires_at');
+            DB::statement('ALTER TABLE temp_tokens ADD INDEX idx_temp_tokens_used (used)');
+        }
+        
+        // Добавляем поля информации о пользователе в affiliate_links
+        if (!Schema::hasColumn('affiliate_links', 'first_name')) {
+            DB::statement('ALTER TABLE affiliate_links ADD COLUMN first_name VARCHAR(255) NULL AFTER telegram_id');
+        }
+        if (!Schema::hasColumn('affiliate_links', 'last_name')) {
+            DB::statement('ALTER TABLE affiliate_links ADD COLUMN last_name VARCHAR(255) NULL AFTER first_name');
+        }
+        if (!Schema::hasColumn('affiliate_links', 'username')) {
+            DB::statement('ALTER TABLE affiliate_links ADD COLUMN username VARCHAR(255) NULL AFTER last_name');
+        }
+        if (!Schema::hasColumn('affiliate_links', 'language_code')) {
+            DB::statement('ALTER TABLE affiliate_links ADD COLUMN language_code VARCHAR(255) NULL AFTER username');
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Миграции выполнены успешно!',
+            'tables_updated' => [
+                'temp_tokens' => 'Добавлено поле used',
+                'affiliate_links' => 'Добавлены поля first_name, last_name, username, language_code'
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});

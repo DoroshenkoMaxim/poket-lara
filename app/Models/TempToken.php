@@ -16,11 +16,13 @@ class TempToken extends Model
         'click_id',
         'trader_id',
         'expires_at',
+        'used',
     ];
 
     protected $casts = [
         'telegram_id' => 'integer',
         'expires_at' => 'datetime',
+        'used' => 'boolean',
     ];
 
     /**

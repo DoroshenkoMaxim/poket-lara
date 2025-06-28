@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Services\AffiliateService;
+use App\Services\TelegramBotService;
+use App\Models\User;
 
 class PostbackController extends Controller
 {
     protected AffiliateService $affiliateService;
+    protected TelegramBotService $telegramBot;
 
-    public function __construct(AffiliateService $affiliateService)
+    public function __construct(AffiliateService $affiliateService, TelegramBotService $telegramBot)
     {
         $this->affiliateService = $affiliateService;
+        $this->telegramBot = $telegramBot;
     }
 
     /**
@@ -70,18 +75,25 @@ class PostbackController extends Controller
             // Обрабатываем постбек
             $result = $this->affiliateService->processPostback($data);
             
-            // Отправляем уведомление пользователю
-            $notificationSent = $this->affiliateService->sendRegistrationNotification($result);
+            // Создаем/находим пользователя и авторизуем его
+            $user = $this->createAndLoginUser($result['telegram_id']);
             
-            // Создаем авторизованную ссылку для Laravel
-            $authLink = $this->affiliateService->createAuthenticatedLink($result['telegram_id']);
+            // Формируем ссылку на сигналы (просто главная страница)
+            $signalsUrl = url('/');
+            
+            // Отправляем уведомление пользователю
+            $notificationSent = $this->sendRegistrationNotification(
+                $result['telegram_id'], 
+                $signalsUrl
+            );
 
             Log::info('Postback processed successfully', [
                 'click_id' => $data['click_id'],
                 'trader_id' => $data['trader_id'],
                 'telegram_id' => $result['telegram_id'],
+                'user_id' => $user->id,
                 'notification_sent' => $notificationSent,
-                'auth_link' => $authLink
+                'signals_url' => $signalsUrl
             ]);
 
             return response()->json([
@@ -89,8 +101,9 @@ class PostbackController extends Controller
                 'message' => 'Registration processed successfully',
                 'click_id' => $data['click_id'],
                 'trader_id' => $data['trader_id'],
-                'signals_url' => $result['signals_url'],
-                'auth_link' => $authLink,
+                'telegram_id' => $result['telegram_id'],
+                'user_id' => $user->id,
+                'signals_url' => $signalsUrl,
                 'notification_sent' => $notificationSent
             ]);
 
@@ -127,6 +140,69 @@ class PostbackController extends Controller
             return response()->json([
                 'error' => 'Internal server error: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Создать пользователя и авторизовать его
+     */
+    private function createAndLoginUser(int $telegramId): User
+    {
+        // Создаем/находим пользователя
+        $user = User::firstOrCreate(
+            ['telegram_id' => $telegramId],
+            [
+                'name' => 'Telegram User ' . $telegramId,
+                'email' => 'telegram_' . $telegramId . '@example.com',
+                'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(32)),
+            ]
+        );
+
+        Log::info('User created/found for postback', [
+            'user_id' => $user->id,
+            'telegram_id' => $telegramId,
+            'was_created' => $user->wasRecentlyCreated
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Отправить уведомление о регистрации
+     */
+    private function sendRegistrationNotification(int $telegramId, string $signalsUrl): bool
+    {
+        $message = "🎉 <b>Поздравляем с успешной регистрацией!</b>\n\n";
+        $message .= "✅ Ваш аккаунт PocketOption активирован\n";
+        $message .= "🎯 Теперь у вас есть доступ к торговым сигналам!\n\n";
+        $message .= "🔗 Перейдите по ссылке для просмотра сигналов:\n";
+        $message .= $signalsUrl . "\n\n";
+        $message .= "💰 Удачной торговли!";
+
+        // Создаем клавиатуру с кнопками
+        $keyboard = $this->telegramBot->createInlineKeyboard([
+            [
+                ['text' => '📊 Перейти к сигналам', 'url' => $signalsUrl]
+            ],
+            [
+                ['text' => '🤖 Открыть бота', 'url' => 'https://t.me/' . config('services.telegram.bot_username')]
+            ]
+        ]);
+
+        try {
+            $result = $this->telegramBot->sendMessage(
+                $telegramId,
+                $message,
+                $keyboard
+            );
+
+            return $result && $result['ok'];
+        } catch (\Exception $e) {
+            Log::error('Failed to send registration notification', [
+                'telegram_id' => $telegramId,
+                'error' => $e->getMessage()
+            ]);
+            return false;
         }
     }
 } 

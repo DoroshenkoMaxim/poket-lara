@@ -58,6 +58,3 @@ Route::post('/postback', [PostbackController::class, 'handlePostback']);
 
 // Страница сигналов
 Route::get('/signals', [SignalsController::class, 'show'])->name('signals');
-
-// Автоматическая авторизация
-Route::get('/auto-login', [SignalsController::class, 'autoLogin'])->name('auto-login');

@@ -10,16 +10,9 @@
                         <i class="fas fa-chart-line"></i> Торговые сигналы PocketOption
                     </h4>
                     <div class="badge-group">
-                        @if($access_data['method'] === 'token')
-                            <span class="badge bg-success">
-                                <i class="fas fa-clock"></i> 
-                                Доступ до {{ $access_data['expires_at']->format('d.m.Y H:i') }}
-                            </span>
-                        @else
-                            <span class="badge bg-info">
-                                <i class="fas fa-key"></i> Постоянный доступ
-                            </span>
-                        @endif
+                        <span class="badge bg-success">
+                            <i class="fas fa-check-circle"></i> Авторизован
+                        </span>
                     </div>
                 </div>
 
@@ -35,25 +28,18 @@
                         <div class="col-md-8">
                             <h5 class="text-primary">
                                 <i class="fas fa-user"></i> 
-                                Telegram ID: {{ $access_data['telegram_id'] }}
+                                Добро пожаловать, {{ $user->name }}
                             </h5>
                             <p class="text-muted mb-2">
                                 <small>
-                                    Click ID: {{ $access_data['click_id'] ?? 'N/A' }} | 
-                                    Trader ID: {{ $access_data['trader_id'] ?? 'N/A' }}
+                                    <i class="fab fa-telegram-plane"></i> Telegram ID: {{ $telegram_id }}
                                 </small>
                             </p>
                         </div>
                         <div class="col-md-4 text-end">
-                            @if(!Auth::check())
-                                <a href="{{ $telegram_login_url }}" class="btn btn-primary">
-                                    <i class="fab fa-telegram-plane"></i> Войти через Telegram
-                                </a>
-                            @else
-                                <span class="text-success">
-                                    <i class="fas fa-check-circle"></i> Авторизован как {{ Auth::user()->name }}
-                                </span>
-                            @endif
+                            <span class="text-success">
+                                <i class="fas fa-check-circle"></i> Авторизован через Telegram
+                            </span>
                         </div>
                     </div>
 
@@ -126,6 +112,22 @@
                                     <td><span class="badge bg-success">92%</span></td>
                                     <td><span class="badge bg-info">Выполнен</span></td>
                                 </tr>
+                                <tr>
+                                    <td>{{ now()->subMinutes(8)->format('H:i') }}</td>
+                                    <td><span class="badge bg-primary">AUD/USD</span></td>
+                                    <td><span class="text-danger"><i class="fas fa-arrow-down"></i> PUT</span></td>
+                                    <td>10 минут</td>
+                                    <td><span class="badge bg-success">85%</span></td>
+                                    <td><span class="badge bg-info">Выполнен</span></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ now()->subMinutes(12)->format('H:i') }}</td>
+                                    <td><span class="badge bg-primary">USD/CAD</span></td>
+                                    <td><span class="text-success"><i class="fas fa-arrow-up"></i> CALL</span></td>
+                                    <td>3 минуты</td>
+                                    <td><span class="badge bg-success">91%</span></td>
+                                    <td><span class="badge bg-info">Выполнен</span></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -133,15 +135,36 @@
                     <!-- Дополнительная информация -->
                     <div class="alert alert-info mt-4" role="alert">
                         <h6 class="alert-heading">
-                            <i class="fas fa-info-circle"></i> Информация
+                            <i class="fas fa-info-circle"></i> Информация о сигналах
                         </h6>
-                        <p class="mb-0">
-                            Сигналы обновляются каждые 5 минут. Для получения максимальной прибыли рекомендуется следовать сигналам с точностью выше 80%.
-                            @if($access_data['method'] === 'token')
-                                Ваш временный доступ истекает {{ $access_data['expires_at']->format('d.m.Y в H:i') }}. 
-                                После этого вы сможете авторизоваться через виджет Telegram.
-                            @endif
+                        <p class="mb-2">
+                            • Сигналы обновляются каждые 5 минут автоматически<br>
+                            • Для максимальной прибыли следуйте сигналам с точностью выше 80%<br>
+                            • Рекомендуемая сумма сделки: 2-5% от депозита<br>
+                            • Используйте стратегию управления капиталом
                         </p>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt"></i> 
+                                У вас постоянный доступ к сигналам через авторизацию Telegram
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Дополнительные кнопки -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <a href="https://po.cash/smart/j9IBCSAyjqdBE7" 
+                               class="btn btn-success btn-lg w-100" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Перейти к торговле
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="https://t.me/{{ config('services.telegram.bot_username') }}" 
+                               class="btn btn-primary btn-lg w-100" target="_blank">
+                                <i class="fab fa-telegram-plane"></i> Связаться с ботом
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -177,6 +200,11 @@
     .alert-heading {
         margin-bottom: 10px;
     }
+
+    .btn-lg {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
 </style>
 
 <script>
@@ -192,7 +220,16 @@
         if (countdown <= 0) {
             countdown = 300;
         }
-        document.title = `Сигналы (обновление через ${Math.floor(countdown/60)}:${(countdown%60).toString().padStart(2, '0')})`;
+        const minutes = Math.floor(countdown/60);
+        const seconds = countdown % 60;
+        document.title = `Сигналы (обновление через ${minutes}:${seconds.toString().padStart(2, '0')})`;
     }, 1000);
+
+    // Уведомление о новых сигналах
+    document.addEventListener('DOMContentLoaded', function() {
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    });
 </script>
 @endsection 

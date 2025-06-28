@@ -67,23 +67,21 @@ class TelegramAuthController extends Controller
         $user = User::where('telegram_id', $telegramId)->first();
         
         if (!$user) {
-            // Автоматически создаем пользователя если его нет
-            $firstName = $telegramData['first_name'] ?? 'Telegram User';
+            // Пользователь не зарегистрирован через бота
+            $firstName = $telegramData['first_name'] ?? 'Пользователь';
             $username = $telegramData['username'] ?? null;
+            $displayName = $username ? $firstName . ' (@' . $username . ')' : $firstName;
             
-            $name = $username ? $firstName . ' (@' . $username . ')' : $firstName;
-            
-            $user = User::create([
+            Log::info('User not found in database', [
                 'telegram_id' => $telegramId,
-                'name' => $name,
-                'email' => 'telegram_' . $telegramId . '@example.com',
-                'password' => Hash::make(Str::random(32)),
+                'name' => $displayName
             ]);
             
-            Log::info('Created new user from Telegram auth', [
-                'user_id' => $user->id,
-                'telegram_id' => $telegramId,
-                'name' => $name
+            return redirect()->route('login')->with([
+                'error' => 'Пользователь не найден в системе',
+                'telegram_name' => $displayName,
+                'show_bot_button' => true,
+                'telegram_id' => $telegramId
             ]);
         }
 

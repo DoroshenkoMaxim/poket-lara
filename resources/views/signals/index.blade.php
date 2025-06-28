@@ -18,14 +18,14 @@
                     <!-- Фильтры -->
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-outline-primary btn-lg filter-btn" 
+                            <button type="button" class="btn btn-outline-primary btn-lg w-100 filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#currencyModal" id="currencyBtn">
                                 <i class="fas fa-coins"></i>
                                 <span class="filter-title">Валюты</span>
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-outline-info btn-lg filter-btn" 
+                            <button type="button" class="btn btn-outline-info btn-lg w-100 filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#timeframeModal" id="timeframeBtn">
                                 <i class="fas fa-clock"></i>
                                 <span class="filter-title">Таймфреймы</span>
@@ -35,7 +35,7 @@
 
                     <!-- Кнопка поиска сигнала -->
                     <div class="text-center mb-4">
-                        <button type="button" class="btn btn-success btn-lg px-5 py-3" id="findSignalBtn">
+                        <button type="button" class="btn btn-success btn-lg px-5 py-3 me-3" id="findSignalBtn">
                             <i class="fas fa-search"></i>
                             <span class="btn-text">Найти сигнал</span>
                         </button>
@@ -77,14 +77,6 @@
                         </div>
                     </div>
 
-                    </div>
-
-                    <!-- Кнопка сброса -->
-                    <div class="text-center mt-4">
-                        <button type="button" class="btn btn-outline-secondary btn-lg px-4 py-3" id="clearFiltersBtn">
-                            <i class="fas fa-eraser"></i>
-                            <span class="btn-text">Сбросить</span>
-                        </button>
                     </div>
 
                     <!-- Информационный блок -->
@@ -258,9 +250,10 @@
     }
 
     .filter-btn {
-        border-radius: 25px;
-        font-size: 1.2rem;
-        font-weight: 600;
+        height: 100px;
+        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -298,7 +291,6 @@
         border-radius: 25px;
         font-size: 1.2rem;
         font-weight: 600;
-        display: none;
     }
 
     .loading-animation {
@@ -510,29 +502,26 @@
         }
 
         /* Адаптивность кнопок поиска и сброса на мобильных */
-        #findSignalBtn {
+        #findSignalBtn, #clearFiltersBtn {
             font-size: 1rem;
             padding: 12px 20px !important;
             margin-bottom: 10px;
             display: block;
             width: 100%;
-            margin-right: 0 !important;
         }
 
-        #clearFiltersBtn {
-            font-size: 1rem;
-            padding: 12px 20px !important;
-            margin-bottom: 10px;
-            width: 100%;
+        #findSignalBtn {
+            margin-right: 0 !important;
         }
         
         /* Компактные кнопки фильтров для мобильных */
         .filter-btn {
-            font-size: 1rem;
+            height: 60px;
+            padding: 10px;
         }
         
         .filter-btn i {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
         }
         
         /* Отступ между фильтрами на мобильных */
@@ -567,7 +556,6 @@
             this.loadFromStorage();
             this.bindEvents();
             this.restoreSignal();
-            this.updateClearButtonVisibility();
         }
 
         bindEvents() {
@@ -601,27 +589,13 @@
         selectCurrency(currency) {
             this.selectedCurrency = currency;
             this.updateFilterButtons();
-            this.updateClearButtonVisibility();
             this.saveToStorage();
         }
 
         selectTimeframe(timeframe) {
             this.selectedTimeframe = timeframe;
             this.updateFilterButtons();
-            this.updateClearButtonVisibility();
             this.saveToStorage();
-        }
-
-        updateClearButtonVisibility() {
-            const clearBtn = document.getElementById('clearFiltersBtn');
-            const hasFilters = this.selectedCurrency || this.selectedTimeframe;
-            const hasSignal = this.lastSignal;
-            
-            if (hasFilters || hasSignal) {
-                clearBtn.style.display = 'inline-block';
-            } else {
-                clearBtn.style.display = 'none';
-            }
         }
 
         saveToStorage() {
@@ -674,8 +648,6 @@
                     findBtn.disabled = false;
                     findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
                 }
-                
-                this.updateClearButtonVisibility();
             }
         }
 
@@ -694,7 +666,6 @@
             
             // Обновить интерфейс
             this.updateFilterButtons();
-            this.updateClearButtonVisibility();
             
             // Скрыть все результаты
             const loadingAnimation = document.getElementById('loadingAnimation');
@@ -757,7 +728,6 @@
             // Сгенерировать сигнал
             const signal = this.generateSignal();
             this.lastSignal = signal;
-            this.updateClearButtonVisibility();
             this.saveToStorage();
             this.displaySignal(signal);
 

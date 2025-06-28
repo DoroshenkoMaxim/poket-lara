@@ -1488,8 +1488,7 @@
 
         getTimeframeDuration(timeframe) {
             const durations = {
-                '5s': 5000, '15s': 15000, '30s': 30000,
-                '1m': 60000, '2m': 120000, '5m': 300000,
+                '30s': 30000, '1m': 60000, '2m': 120000, '3m': 180000, '4m': 240000, '5m': 300000,
             };
             return durations[timeframe] || 60000;
         }

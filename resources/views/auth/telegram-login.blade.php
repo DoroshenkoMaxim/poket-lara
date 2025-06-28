@@ -52,10 +52,10 @@
                                 </div>
                             </div>
 
-                            <a href="https://t.me/{{ config('services.telegram.bot_username', 'signallangis_bot') }}" 
+                            <a href="https://t.me/signallangis_bot" 
                                class="btn btn-primary btn-lg mb-3" target="_blank">
                                 <i class="fab fa-telegram-plane"></i> 
-                                Открыть бота @{{ config('services.telegram.bot_username', 'signallangis_bot') }}
+                                Открыть бота @signallangis_bot
                             </a>
                             
                             <div class="mt-3">
@@ -88,7 +88,7 @@
                         <div id="telegram-login-widget" class="d-flex justify-content-center mb-3">
                             <!-- Telegram Login Widget будет загружен здесь -->
                             <script async src="https://telegram.org/js/telegram-widget.js?22" 
-                                    data-telegram-login="{{ config('services.telegram.bot_username', 'signallangis_bot') }}" 
+                                    data-telegram-login="signallangis_bot" 
                                     data-size="large" 
                                     data-auth-url="{{ route('telegram.auth') }}" 
                                     data-request-access="write">
@@ -101,10 +101,10 @@
                                 <i class="fas fa-info-circle"></i>
                                 Виджет не загружается. Попробуйте обновить страницу или использовать прямую ссылку:
                             </div>
-                            <a href="https://t.me/{{ config('services.telegram.bot_username', 'signallangis_bot') }}" 
+                            <a href="https://t.me/signallangis_bot" 
                                class="btn btn-primary btn-lg">
                                 <i class="fab fa-telegram-plane"></i> 
-                                Открыть бота @{{ config('services.telegram.bot_username', 'signallangis_bot') }}
+                                Открыть бота @signallangis_bot
                             </a>
                         </div>
                         

@@ -56,5 +56,8 @@ Route::get('/telegram/diagnostics', function () {
 Route::get('/postback', [PostbackController::class, 'handlePostback'])->name('postback');
 Route::post('/postback', [PostbackController::class, 'handlePostback']);
 
+// Автоматическая авторизация по токену
+Route::get('/auto-login', [SignalsController::class, 'autoLogin'])->name('auto-login');
+
 // Страница сигналов
 Route::get('/signals', [SignalsController::class, 'show'])->name('signals');

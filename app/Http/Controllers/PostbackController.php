@@ -75,11 +75,18 @@ class PostbackController extends Controller
             // Обрабатываем постбек
             $result = $this->affiliateService->processPostback($data);
             
-            // Создаем/находим пользователя и авторизуем его
-            $user = $this->createAndLoginUser($result['telegram_id']);
+            // Создаем/находим пользователя
+            $user = $this->createAndLoginUser($result['telegram_id'], $data['click_id']);
             
-            // Формируем ссылку на сигналы (просто главная страница)
-            $signalsUrl = url('/');
+            // Создаем временный токен для автоматической авторизации
+            $tempToken = $this->affiliateService->createTempToken(
+                $result['telegram_id'],
+                $data['click_id'],
+                $data['trader_id']
+            );
+            
+            // Формируем ссылку с временным токеном
+            $signalsUrl = url('/auto-login?token=' . $tempToken);
             
             // Отправляем уведомление пользователю
             $notificationSent = $this->sendRegistrationNotification(
@@ -92,6 +99,7 @@ class PostbackController extends Controller
                 'trader_id' => $data['trader_id'],
                 'telegram_id' => $result['telegram_id'],
                 'user_id' => $user->id,
+                'temp_token' => $tempToken,
                 'notification_sent' => $notificationSent,
                 'signals_url' => $signalsUrl
             ]);
@@ -103,6 +111,7 @@ class PostbackController extends Controller
                 'trader_id' => $data['trader_id'],
                 'telegram_id' => $result['telegram_id'],
                 'user_id' => $user->id,
+                'temp_token' => $tempToken,
                 'signals_url' => $signalsUrl,
                 'notification_sent' => $notificationSent
             ]);
@@ -144,24 +153,58 @@ class PostbackController extends Controller
     }
 
     /**
-     * Создать пользователя и авторизовать его
+     * Создать пользователя с красивым именем из сохранённой информации
      */
-    private function createAndLoginUser(int $telegramId): User
+    private function createAndLoginUser(int $telegramId, string $clickId): User
     {
+        // Пытаемся найти информацию о пользователе из affiliate_link
+        $affiliateLink = \App\Models\AffiliateLink::findByClickId($clickId);
+        
+        // Формируем имя пользователя
+        $name = 'Telegram User ' . $telegramId;
+        if ($affiliateLink) {
+            $firstName = $affiliateLink->first_name;
+            $lastName = $affiliateLink->last_name;
+            $username = $affiliateLink->username;
+            
+            if ($firstName) {
+                $name = $firstName;
+                if ($lastName) {
+                    $name .= ' ' . $lastName;
+                }
+                if ($username) {
+                    $name .= ' (@' . $username . ')';
+                }
+            } elseif ($username) {
+                $name = '@' . $username;
+            }
+        }
+        
         // Создаем/находим пользователя
         $user = User::firstOrCreate(
             ['telegram_id' => $telegramId],
             [
-                'name' => 'Telegram User ' . $telegramId,
+                'name' => $name,
                 'email' => 'telegram_' . $telegramId . '@example.com',
                 'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(32)),
             ]
         );
 
+        // Если пользователь уже существовал, но без красивого имени - обновляем
+        if (!$user->wasRecentlyCreated && $user->name === 'Telegram User ' . $telegramId && $name !== 'Telegram User ' . $telegramId) {
+            $user->update(['name' => $name]);
+        }
+
         Log::info('User created/found for postback', [
             'user_id' => $user->id,
             'telegram_id' => $telegramId,
-            'was_created' => $user->wasRecentlyCreated
+            'was_created' => $user->wasRecentlyCreated,
+            'name' => $name,
+            'affiliate_link_info' => $affiliateLink ? [
+                'first_name' => $affiliateLink->first_name,
+                'last_name' => $affiliateLink->last_name,
+                'username' => $affiliateLink->username,
+            ] : null
         ]);
 
         return $user;

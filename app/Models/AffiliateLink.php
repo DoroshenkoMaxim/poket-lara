@@ -12,6 +12,10 @@ class AffiliateLink extends Model
     protected $fillable = [
         'click_id',
         'telegram_id',
+        'first_name',
+        'last_name',
+        'username',
+        'language_code',
     ];
 
     protected $casts = [
@@ -45,13 +49,17 @@ class AffiliateLink extends Model
     /**
      * Создать новую партнерскую ссылку
      */
-    public static function createLink(int $telegramId): self
+    public static function createLink(int $telegramId, array $userInfo = []): self
     {
         $clickId = uniqid('click_' . $telegramId . '_', true);
         
         return static::create([
             'click_id' => $clickId,
             'telegram_id' => $telegramId,
+            'first_name' => $userInfo['first_name'] ?? null,
+            'last_name' => $userInfo['last_name'] ?? null,
+            'username' => $userInfo['username'] ?? null,
+            'language_code' => $userInfo['language_code'] ?? null,
         ]);
     }
 } 

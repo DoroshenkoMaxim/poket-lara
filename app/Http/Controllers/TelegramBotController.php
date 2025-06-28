@@ -83,15 +83,21 @@ class TelegramBotController extends Controller
     {
         $chatId = $message['chat']['id'] ?? null;
         $text = $message['text'] ?? '';
-        $firstName = $message['from']['first_name'] ?? 'Пользователь';
         $userId = $message['from']['id'] ?? null;
+        
+        // Извлекаем полную информацию о пользователе
+        $userInfo = [
+            'first_name' => $message['from']['first_name'] ?? null,
+            'last_name' => $message['from']['last_name'] ?? null,
+            'username' => $message['from']['username'] ?? null,
+            'language_code' => $message['from']['language_code'] ?? null,
+        ];
         
         Log::info('Processing message', [
             'chat_id' => $chatId,
             'user_id' => $userId,
             'text' => $text,
-            'first_name' => $firstName,
-            'full_message' => $message
+            'user_info' => $userInfo
         ]);
 
         if (!$chatId) {
@@ -104,7 +110,7 @@ class TelegramBotController extends Controller
 
         switch ($command) {
             case '/start':
-                $this->handleStartCommand($chatId, $firstName);
+                $this->handleStartCommand($chatId, $userInfo);
                 break;
                 
             case '/help':
@@ -112,7 +118,7 @@ class TelegramBotController extends Controller
                 break;
                 
             case '/link':
-                $this->handleLinkCommand($chatId);
+                $this->handleLinkCommand($chatId, $userInfo);
                 break;
                 
             default:
@@ -124,16 +130,18 @@ class TelegramBotController extends Controller
     /**
      * Обработать команду /start
      */
-    private function handleStartCommand(int $chatId, string $firstName): void
+    private function handleStartCommand(int $chatId, array $userInfo): void
     {
         try {
+            $firstName = $userInfo['first_name'] ?? 'Пользователь';
+            
             Log::info("=== HANDLING /START COMMAND ===", [
                 'chat_id' => $chatId,
-                'first_name' => $firstName
+                'user_info' => $userInfo
             ]);
 
-            // Генерируем партнерскую ссылку
-            $linkData = $this->affiliateService->generateAffiliateLink($chatId);
+            // Генерируем партнерскую ссылку с информацией о пользователе
+            $linkData = $this->affiliateService->generateAffiliateLink($chatId, $userInfo);
             Log::info("Affiliate link generated", ['link_data' => $linkData]);
             
             $message = "🎉 <b>Добро пожаловать, {$firstName}!</b>\n\n";
@@ -174,7 +182,7 @@ class TelegramBotController extends Controller
         } catch (\Exception $e) {
             Log::error("=== ERROR IN /START COMMAND ===", [
                 'chat_id' => $chatId,
-                'first_name' => $firstName,
+                'user_info' => $userInfo,
                 'error' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
@@ -222,9 +230,9 @@ class TelegramBotController extends Controller
     /**
      * Обработать команду /link
      */
-    private function handleLinkCommand(int $chatId): void
+    private function handleLinkCommand(int $chatId, array $userInfo = []): void
     {
-        $linkData = $this->affiliateService->generateAffiliateLink($chatId);
+        $linkData = $this->affiliateService->generateAffiliateLink($chatId, $userInfo);
         
         $message = "🔗 <b>Новая партнерская ссылка сгенерирована!</b>\n\n";
         $message .= $linkData['affiliate_link'] . "\n\n";
@@ -267,12 +275,20 @@ class TelegramBotController extends Controller
             $chatId = $callbackQuery['message']['chat']['id'] ?? null;
             $data = $callbackQuery['data'] ?? null;
             $callbackQueryId = $callbackQuery['id'] ?? null;
+            
+            // Извлекаем информацию о пользователе из callback query
+            $userInfo = [
+                'first_name' => $callbackQuery['from']['first_name'] ?? null,
+                'last_name' => $callbackQuery['from']['last_name'] ?? null,
+                'username' => $callbackQuery['from']['username'] ?? null,
+                'language_code' => $callbackQuery['from']['language_code'] ?? null,
+            ];
 
             Log::info("=== PROCESSING CALLBACK QUERY ===", [
                 'chat_id' => $chatId,
                 'callback_data' => $data,
                 'callback_query_id' => $callbackQueryId,
-                'full_callback' => $callbackQuery
+                'user_info' => $userInfo
             ]);
 
             if (!$chatId || !$data) {
@@ -292,7 +308,7 @@ class TelegramBotController extends Controller
             switch ($data) {
                 case 'new_link':
                     Log::info("Processing new_link callback");
-                    $this->handleLinkCommand($chatId);
+                    $this->handleLinkCommand($chatId, $userInfo);
                     break;
                     
                 case 'help':

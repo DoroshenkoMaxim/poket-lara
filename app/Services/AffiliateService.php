@@ -4,15 +4,16 @@ namespace App\Services;
 
 use App\Models\AffiliateLink;
 use App\Models\Registration;
+use App\Models\TempToken;
 
 class AffiliateService
 {
     /**
      * Генерировать партнерскую ссылку для пользователя
      */
-    public function generateAffiliateLink(int $telegramId): array
+    public function generateAffiliateLink(int $telegramId, array $userInfo = []): array
     {
-        $affiliateLink = AffiliateLink::createLink($telegramId);
+        $affiliateLink = AffiliateLink::createLink($telegramId, $userInfo);
         
         // Базовая ссылка из документации PocketOption
         $baseUrl = 'https://u3.shortink.io/register';
@@ -32,7 +33,8 @@ class AffiliateService
         return [
             'click_id' => $affiliateLink->click_id,
             'affiliate_link' => $url,
-            'telegram_id' => $telegramId
+            'telegram_id' => $telegramId,
+            'user_info' => $userInfo
         ];
     }
 
@@ -94,5 +96,50 @@ class AffiliateService
         // Проверяем, есть ли пользователь с таким telegram_id в системе
         $user = \App\Models\User::where('telegram_id', $telegramId)->first();
         return $user !== null;
+    }
+
+    /**
+     * Создать временный токен для автоматической авторизации
+     */
+    public function createTempToken(int $telegramId, string $clickId, string $traderId): string
+    {
+        // Генерируем уникальный токен
+        $token = bin2hex(random_bytes(32));
+        
+        // Создаем временный токен (активен 24 часа)
+        TempToken::create([
+            'token' => $token,
+            'telegram_id' => $telegramId,
+            'click_id' => $clickId,
+            'trader_id' => $traderId,
+            'expires_at' => now()->addHours(24),
+            'used' => false
+        ]);
+
+        return $token;
+    }
+
+    /**
+     * Использовать временный токен для авторизации
+     */
+    public function useTokenForAuth(string $token): ?array
+    {
+        $tempToken = TempToken::where('token', $token)
+            ->where('expires_at', '>', now())
+            ->where('used', false)
+            ->first();
+
+        if (!$tempToken) {
+            return null;
+        }
+
+        // Помечаем токен как использованный
+        $tempToken->update(['used' => true]);
+
+        return [
+            'telegram_id' => $tempToken->telegram_id,
+            'click_id' => $tempToken->click_id,
+            'trader_id' => $tempToken->trader_id
+        ];
     }
 } 

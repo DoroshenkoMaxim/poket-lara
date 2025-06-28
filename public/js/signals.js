@@ -6,8 +6,16 @@
 class AdvancedSignalGenerator {
     constructor() {
         this.currencies = [
-            'EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 
-            'EUR/GBP', 'USD/CHF', 'NZD/USD', 'EUR/JPY'
+            'AED/CNY', 'AUD/CAD', 'AUD/CHF', 'AUD/JPY', 'AUD/NZD', 'AUD/USD',
+            'BHD/CNY', 'CAD/CHF', 'CAD/JPY', 'CHF/JPY', 'CHF/NOK',
+            'EUR/AUD', 'EUR/CAD', 'EUR/CHF', 'EUR/GBP', 'EUR/HUF', 'EUR/JPY', 
+            'EUR/NZD', 'EUR/TRY', 'EUR/USD', 'GBP/AUD', 'GBP/CAD', 'GBP/CHF', 
+            'GBP/JPY', 'GBP/USD', 'JOD/CNY', 'KES/USD', 'LBP/USD', 'MAD/USD', 
+            'NGN/USD', 'NZD/JPY', 'NZD/USD', 'OMR/CNY', 'QAR/CNY', 'SAR/CNY', 
+            'TND/USD', 'UAH/USD', 'USD/ARS', 'USD/BDT', 'USD/BRL', 'USD/CAD', 
+            'USD/CHF', 'USD/CLP', 'USD/CNH', 'USD/COP', 'USD/DZD', 'USD/EGP', 
+            'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
+            'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
         ];
         this.timeframes = ['5s', '15s', '30s', '1m', '2m', '5m'];
         this.selectedCurrency = null;
@@ -408,15 +416,70 @@ class AdvancedSignalGenerator {
 
     generatePrice(currency) {
         const prices = {
+            // Major Pairs
             'EUR/USD': 1.0800 + Math.random() * 0.0200,
             'GBP/USD': 1.2500 + Math.random() * 0.0300,
             'USD/JPY': 145.00 + Math.random() * 5.00,
             'AUD/USD': 0.6600 + Math.random() * 0.0200,
             'USD/CAD': 1.3500 + Math.random() * 0.0200,
-            'EUR/GBP': 0.8600 + Math.random() * 0.0200,
             'USD/CHF': 0.9100 + Math.random() * 0.0200,
             'NZD/USD': 0.6100 + Math.random() * 0.0200,
-            'EUR/JPY': 156.00 + Math.random() * 4.00
+            
+            // Cross Pairs
+            'EUR/GBP': 0.8600 + Math.random() * 0.0200,
+            'EUR/JPY': 156.00 + Math.random() * 4.00,
+            'EUR/CHF': 0.9800 + Math.random() * 0.0200,
+            'EUR/AUD': 1.6200 + Math.random() * 0.0300,
+            'EUR/CAD': 1.4600 + Math.random() * 0.0300,
+            'EUR/NZD': 1.7500 + Math.random() * 0.0400,
+            'EUR/TRY': 29.50 + Math.random() * 10.00,
+            'EUR/HUF': 385.00 + Math.random() * 20.00,
+            'GBP/JPY': 181.00 + Math.random() * 5.00,
+            'GBP/CHF': 1.1400 + Math.random() * 0.0200,
+            'GBP/AUD': 1.8800 + Math.random() * 0.0400,
+            'GBP/CAD': 1.7000 + Math.random() * 0.0300,
+            'AUD/CAD': 0.9000 + Math.random() * 0.0200,
+            'AUD/CHF': 0.6000 + Math.random() * 0.0150,
+            'AUD/JPY': 95.50 + Math.random() * 3.00,
+            'AUD/NZD': 1.0800 + Math.random() * 0.0200,
+            'CAD/CHF': 0.6750 + Math.random() * 0.0150,
+            'CAD/JPY': 107.00 + Math.random() * 3.00,
+            'CHF/JPY': 159.00 + Math.random() * 4.00,
+            'CHF/NOK': 11.20 + Math.random() * 3.00,
+            'NZD/JPY': 88.50 + Math.random() * 3.00,
+            
+            // Exotic and OTC Pairs
+            'AED/CNY': 1.96 + Math.random() * 0.05,
+            'BHD/CNY': 19.15 + Math.random() * 2.00,
+            'JOD/CNY': 10.15 + Math.random() * 1.00,
+            'OMR/CNY': 18.75 + Math.random() * 2.00,
+            'QAR/CNY': 1.98 + Math.random() * 0.05,
+            'SAR/CNY': 1.92 + Math.random() * 0.05,
+            'KES/USD': 0.0067 + Math.random() * 0.001,
+            'LBP/USD': 0.0000666 + Math.random() * 0.00005,
+            'MAD/USD': 0.1000 + Math.random() * 0.002,
+            'NGN/USD': 0.0012 + Math.random() * 0.0005,
+            'TND/USD': 0.3200 + Math.random() * 0.005,
+            'UAH/USD': 0.0270 + Math.random() * 0.002,
+            'YER/USD': 0.0040 + Math.random() * 0.0005,
+            'ZAR/USD': 0.0530 + Math.random() * 0.003,
+            'USD/ARS': 850.00 + Math.random() * 50.00,
+            'USD/BDT': 110.50 + Math.random() * 3.00,
+            'USD/BRL': 5.15 + Math.random() * 2.00,
+            'USD/CLP': 970.00 + Math.random() * 30.00,
+            'USD/CNH': 7.20 + Math.random() * 1.00,
+            'USD/COP': 4300.00 + Math.random() * 200.00,
+            'USD/DZD': 135.00 + Math.random() * 5.00,
+            'USD/EGP': 31.00 + Math.random() * 2.00,
+            'USD/IDR': 15800.00 + Math.random() * 500.00,
+            'USD/INR': 83.20 + Math.random() * 3.00,
+            'USD/MXN': 18.50 + Math.random() * 2.00,
+            'USD/MYR': 4.70 + Math.random() * 1.00,
+            'USD/PHP': 56.50 + Math.random() * 2.00,
+            'USD/PKR': 285.00 + Math.random() * 10.00,
+            'USD/SGD': 1.36 + Math.random() * 0.05,
+            'USD/THB': 36.80 + Math.random() * 2.00,
+            'USD/VND': 24300.00 + Math.random() * 1000.00,
         };
         return prices[currency]?.toFixed(4) || '1.0000';
     }

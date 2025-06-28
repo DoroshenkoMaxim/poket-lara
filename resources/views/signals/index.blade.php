@@ -512,6 +512,16 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3">
+                <div class="col-md-6">
+                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="5s">
+                            <strong>5 секунд</strong>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="15s">
+                            <strong>15 секунд</strong>
+                        </button>
+                    </div>
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="30s">
                             <strong>30 секунд</strong>
@@ -530,16 +540,6 @@
                     <div class="col-md-6">
                         <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="3m">
                             <strong>3 минуты</strong>
-                        </button>
-                    </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="4m">
-                            <strong>4 минуты</strong>
-                        </button>
-                    </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-info w-100 timeframe-btn" data-timeframe="5m">
-                            <strong>5 минут</strong>
                         </button>
                     </div>
                 </div>
@@ -926,7 +926,7 @@
                 'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
                 'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
             ];
-            this.timeframes = ['30s', '1m', '2m', '3m', '4m', '5m',];
+            this.timeframes = ['5s', '15s', '30s', '1m', '2m', '3m'];
             this.selectedCurrency = null;
             this.selectedTimeframe = null;
             this.lastSignal = null;
@@ -1480,7 +1480,7 @@
             resultBadge.className = 'result-badge';
             resultBadge.innerHTML = `
                 <i class="fas fa-${isWin ? 'trophy' : 'times-circle'}"></i>
-                <span>${isWin ? 'ПОБЕДА' : 'НЕ БЕДА'}</span>
+                <span>${isWin ? 'ПОБЕДА' : 'НЕУДАЧА'}</span>
             `;
             
             signalCard.appendChild(resultBadge);
@@ -1488,7 +1488,7 @@
 
         getTimeframeDuration(timeframe) {
             const durations = {
-                '30s': 30000, '1m': 60000, '2m': 120000, '3m': 180000, '4m': 240000, '5m': 300000,
+                '5s': 5000, '15s': 15000, '30s': 30000, '1m': 60000, '2m': 120000, '3m': 180000,
             };
             return durations[timeframe] || 60000;
         }

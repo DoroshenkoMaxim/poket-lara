@@ -16,7 +16,7 @@ class SimpleSignalGenerator {
             'USD/IDR', 'USD/INR', 'USD/JPY', 'USD/MXN', 'USD/MYR', 'USD/PHP', 
             'USD/PKR', 'USD/SGD', 'USD/THB', 'USD/VND', 'YER/USD', 'ZAR/USD'
         ];
-        this.timeframes = ['30s', '1m', '2m', '3m', '4m', '5m'];
+        this.timeframes = ['5s', '15s', '30s', '1m', '2m', '3m'];
         this.selectedCurrency = null;
         this.selectedTimeframe = null;
         this.isMartingale = false;
@@ -307,7 +307,7 @@ class SimpleSignalGenerator {
     }
 
     getNextSmallerTimeframe(currentTimeframe) {
-        const timeframes = ['30s', '1m', '2m', '3m', '4m', '5m'];
+        const timeframes = ['5s', '15s', '30s', '1m', '2m', '3m'];
         const currentIndex = timeframes.indexOf(currentTimeframe);
         return currentIndex > 0 ? timeframes[currentIndex - 1] : currentTimeframe;
     }
@@ -348,12 +348,7 @@ class SimpleSignalGenerator {
 
     getTimeframeDuration(timeframe) {
         const durations = {
-            '30s': 30000,
-            '1m': 60000,
-            '2m': 120000,
-            '3m': 180000,
-            '4m': 240000,
-            '5m': 300000
+            '5s': 5000, '15s': 15000, '30s': 30000, '1m': 60000, '2m': 120000, '3m': 180000,
         };
         return durations[timeframe] || 60000;
     }

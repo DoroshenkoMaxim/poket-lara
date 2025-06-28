@@ -107,6 +107,104 @@ class AdvancedSignalGenerator {
                 this.findSignal();
             }
         });
+
+        // Копирование названия валюты при клике
+        this.setupCurrencyCopyListener();
+    }
+
+    setupCurrencyCopyListener() {
+        const signalCurrency = document.querySelector('.signal-currency');
+        if (signalCurrency) {
+            // Удаляем старый обработчик, если он есть
+            if (this.currencyClickHandler) {
+                signalCurrency.removeEventListener('click', this.currencyClickHandler);
+            }
+            
+            // Создаем новый обработчик и сохраняем ссылку на него
+            this.currencyClickHandler = (e) => {
+                this.copyCurrencyToClipboard(e.target.textContent);
+            };
+            
+            signalCurrency.addEventListener('click', this.currencyClickHandler);
+        }
+    }
+
+    async copyCurrencyToClipboard(currencyText) {
+        try {
+            // Используем современный API clipboard если доступен
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(currencyText);
+            } else {
+                // Fallback для старых браузеров
+                const textArea = document.createElement('textarea');
+                textArea.value = currencyText;
+                textArea.style.position = 'absolute';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+            
+            this.showCopyNotification(currencyText);
+        } catch (err) {
+            console.error('Ошибка копирования:', err);
+            this.showCopyNotification(currencyText, false);
+        }
+    }
+
+    showCopyNotification(currencyText, success = true) {
+        // Создаем уведомление
+        const notification = document.createElement('div');
+        notification.className = 'copy-notification';
+        notification.innerHTML = success 
+            ? `<i class="fas fa-check"></i> ${currencyText} скопировано!`
+            : `<i class="fas fa-exclamation"></i> Ошибка копирования`;
+        
+        // Стили уведомления
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${success ? '#28a745' : '#dc3545'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        `;
+
+        // Добавляем анимацию
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        
+        if (!document.querySelector('style[data-copy-animation]')) {
+            style.setAttribute('data-copy-animation', 'true');
+            document.head.appendChild(style);
+        }
+
+        document.body.appendChild(notification);
+
+        // Удаляем уведомление через 3 секунды
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
     }
 
     addHoverEffects() {
@@ -292,6 +390,9 @@ class AdvancedSignalGenerator {
 
         // Добавляем пульсацию к иконке направления
         directionIcon.style.animation = 'pulse 1s ease-in-out 3';
+
+        // Перепривязываем обработчик клика для копирования валюты
+        this.setupCurrencyCopyListener();
     }
 
     async waitForTradeCompletion(duration, signal) {

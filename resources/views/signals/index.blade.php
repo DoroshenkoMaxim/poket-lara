@@ -737,6 +737,54 @@
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-radius: 8px;
+        padding: 5px 10px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .signal-currency:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: scale(1.02);
+    }
+
+    .signal-currency::after {
+        content: "📋";
+        position: absolute;
+        right: -25px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        font-size: 0.8rem;
+    }
+
+    .signal-currency:hover::after {
+        opacity: 1;
+    }
+
+    .signal-currency::before {
+        content: "Нажмите для копирования";
+        position: absolute;
+        bottom: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+        z-index: 1000;
+    }
+
+    .signal-currency:hover::before {
+        opacity: 1;
     }
 
     .signal-details {
@@ -940,6 +988,104 @@
                     this.filterCurrencies(e.target.value);
                 });
             }
+
+            // Копирование названия валюты при клике
+            this.setupCurrencyCopyListener();
+        }
+
+        setupCurrencyCopyListener() {
+            const signalCurrency = document.querySelector('.signal-currency');
+            if (signalCurrency) {
+                // Удаляем старый обработчик, если он есть
+                if (this.currencyClickHandler) {
+                    signalCurrency.removeEventListener('click', this.currencyClickHandler);
+                }
+                
+                // Создаем новый обработчик и сохраняем ссылку на него
+                this.currencyClickHandler = (e) => {
+                    this.copyCurrencyToClipboard(e.target.textContent);
+                };
+                
+                signalCurrency.addEventListener('click', this.currencyClickHandler);
+            }
+        }
+
+        async copyCurrencyToClipboard(currencyText) {
+            try {
+                // Используем современный API clipboard если доступен
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(currencyText);
+                } else {
+                    // Fallback для старых браузеров
+                    const textArea = document.createElement('textarea');
+                    textArea.value = currencyText;
+                    textArea.style.position = 'absolute';
+                    textArea.style.left = '-999999px';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                
+                this.showCopyNotification(currencyText);
+            } catch (err) {
+                console.error('Ошибка копирования:', err);
+                this.showCopyNotification(currencyText, false);
+            }
+        }
+
+        showCopyNotification(currencyText, success = true) {
+            // Создаем уведомление
+            const notification = document.createElement('div');
+            notification.className = 'copy-notification';
+            notification.innerHTML = success 
+                ? `<i class="fas fa-check"></i> ${currencyText} скопировано!`
+                : `<i class="fas fa-exclamation"></i> Ошибка копирования`;
+            
+            // Стили уведомления
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${success ? '#28a745' : '#dc3545'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+
+            // Добавляем анимацию
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            
+            if (!document.querySelector('style[data-copy-animation]')) {
+                style.setAttribute('data-copy-animation', 'true');
+                document.head.appendChild(style);
+            }
+
+            document.body.appendChild(notification);
+
+            // Удаляем уведомление через 3 секунды
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
         }
 
         filterCurrencies(searchTerm) {
@@ -1334,6 +1480,9 @@
             signalTime.textContent = signal.timeframe;
             signalProbability.textContent = `${signal.probability}%`;
             signalEntryPrice.textContent = signal.entryPrice;
+
+            // Перепривязываем обработчик клика для копирования валюты
+            this.setupCurrencyCopyListener();
         }
 
         showTradeResult(isWin, signal) {

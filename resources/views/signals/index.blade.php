@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid signals-container">
+<div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-10">
 
@@ -229,17 +229,17 @@
 <!-- Стили -->
 <style>
     /* Отключение анимаций и эффектов только для контейнера сигналов */
-    .signals-container * {
+    .container-fluid .main-card *:not(.dropdown-menu):not(.dropdown-item):not(.navbar *) {
         transition: none !important;
         animation: none !important;
         transform: none !important;
     }
 
-    .signals-container .btn:hover, .signals-container .btn:focus, .signals-container .btn:active,
-    .signals-container .filter-btn:hover, .signals-container .filter-btn:focus, .signals-container .filter-btn:active,
-    .signals-container .currency-btn:hover, .signals-container .currency-btn:focus, .signals-container .currency-btn:active,
-    .signals-container .timeframe-btn:hover, .signals-container .timeframe-btn:focus, .signals-container .timeframe-btn:active,
-    .signals-container .action-btn:hover, .signals-container .action-btn:focus, .signals-container .action-btn:active {
+    .main-card .btn:hover, .main-card .btn:focus, .main-card .btn:active,
+    .filter-btn:hover, .filter-btn:focus, .filter-btn:active,
+    .currency-btn:hover, .currency-btn:focus, .currency-btn:active,
+    .timeframe-btn:hover, .timeframe-btn:focus, .timeframe-btn:active,
+    .action-btn:hover, .action-btn:focus, .action-btn:active {
         transform: none !important;
         box-shadow: none !important;
         border-color: inherit !important;
@@ -853,7 +853,7 @@
             // По умолчанию используем случайные значения для всего рынка
             const currency = this.selectedCurrency || this.currencies[Math.floor(Math.random() * this.currencies.length)];
             const timeframe = this.selectedTimeframe || this.timeframes[Math.floor(Math.random() * this.timeframes.length)];
-            const direction = Math.random() > 0.5 ? 'ВНИЗ' : 'ВВЕРХ';
+            const direction = Math.random() > 0.5 ? 'ВВЕРХ' : 'ВНИЗ';
 
             return {
                 currency,

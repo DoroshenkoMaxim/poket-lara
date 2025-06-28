@@ -1480,7 +1480,7 @@
             resultBadge.className = 'result-badge';
             resultBadge.innerHTML = `
                 <i class="fas fa-${isWin ? 'trophy' : 'times-circle'}"></i>
-                <span>${isWin ? 'WIN' : 'LOSE'}</span>
+                <span>${isWin ? 'ПОБЕДА' : 'НЕ БЕДА'}</span>
             `;
             
             signalCard.appendChild(resultBadge);

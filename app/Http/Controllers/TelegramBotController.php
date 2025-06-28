@@ -455,4 +455,67 @@ class TelegramBotController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Проверить webhook через внешний тест
+     */
+    public function checkWebhookExternal(): JsonResponse
+    {
+        try {
+            $webhookUrl = url('/telegram/webhook');
+            
+            // Попробуем отправить тестовый POST запрос к самому себе
+            $testData = [
+                'update_id' => 999999999,
+                'message' => [
+                    'message_id' => 999999999,
+                    'from' => [
+                        'id' => 123456789,
+                        'first_name' => 'Test',
+                        'username' => 'testuser'
+                    ],
+                    'chat' => [
+                        'id' => 123456789,
+                        'type' => 'private'
+                    ],
+                    'date' => time(),
+                    'text' => '/test_webhook'
+                ]
+            ];
+
+            // Используем cURL для тестирования
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $webhookUrl);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($testData));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'User-Agent: TelegramBot (like TwitterBot)'
+            ]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            return response()->json([
+                'success' => $httpCode == 200,
+                'webhook_url' => $webhookUrl,
+                'http_code' => $httpCode,
+                'response' => $response,
+                'curl_error' => $error,
+                'test_data_sent' => $testData
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
 } 

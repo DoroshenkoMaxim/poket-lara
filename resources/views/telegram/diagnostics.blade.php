@@ -21,35 +21,42 @@
                         
                         <!-- Кнопки управления -->
                         <div class="row mb-4">
-                            <div class="col-md-2">
-                                <button onclick="checkBotInfo()" class="btn btn-info w-100 mb-2">
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                <button onclick="checkBotInfo()" class="btn btn-info w-100">
                                     <i class="fas fa-info-circle"></i> Проверить бота
                                 </button>
                             </div>
-                            <div class="col-md-2">
-                                <button onclick="cleanAndSetupWebhook()" class="btn btn-danger w-100 mb-2">
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                <button onclick="cleanAndSetupWebhook()" class="btn btn-danger w-100">
                                     <i class="fas fa-trash-restore"></i> Очистить и переустановить
                                 </button>
                             </div>
-                            <div class="col-md-2">
-                                <button onclick="testWebhook()" class="btn btn-secondary w-100 mb-2">
-                                    <i class="fas fa-vial"></i> Тест webhook
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                <button onclick="testWebhookAccess()" class="btn btn-info w-100">
+                                    <i class="fas fa-network-wired"></i> Тест доступности
                                 </button>
                             </div>
-                            <div class="col-md-2">
-                                <a href="{{ route('login') }}" class="btn btn-success w-100 mb-2">
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                <button onclick="testWebhookExternal()" class="btn btn-warning w-100">
+                                    <i class="fas fa-globe"></i> Внешний тест
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                                <button onclick="testWebhook()" class="btn btn-secondary w-100">
+                                    <i class="fas fa-vial"></i> Тест webhook endpoint
+                                </button>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                                <a href="{{ route('login') }}" class="btn btn-success w-100">
                                     <i class="fas fa-sign-in-alt"></i> Тест авторизации
                                 </a>
                             </div>
-                            <div class="col-md-2">
-                                <a href="https://t.me/signallangis_bot" target="_blank" class="btn btn-primary w-100 mb-2">
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                                <a href="https://t.me/signallangis_bot" target="_blank" class="btn btn-primary w-100">
                                     <i class="fab fa-telegram-plane"></i> Открыть бота
                                 </a>
-                            </div>
-                            <div class="col-md-2">
-                                <button onclick="checkLogs()" class="btn btn-warning w-100 mb-2">
-                                    <i class="fas fa-file-alt"></i> Проверить логи
-                                </button>
                             </div>
                         </div>
 
@@ -209,21 +216,34 @@
             }
         }
 
-        async function checkLogs() {
-            showLoading('Проверяем последние логи...');
+        async function testWebhookAccess() {
+            showLoading('Проверяем доступность webhook endpoint...');
             try {
-                // Временно показываем информацию о логах
-                showResults({
-                    message: 'Для проверки логов выполните в терминале сервера:',
-                    commands: [
-                        'tail -f storage/logs/laravel.log | grep -i telegram',
-                        'или',
-                        'tail -50 storage/logs/laravel.log'
-                    ],
-                    note: 'Отправьте команду /start боту и проверьте логи на наличие webhook событий'
-                }, 'Инструкция по проверке логов');
+                const response = await fetch('/telegram/webhook-test');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResults({
+                        ...data,
+                        message: 'Webhook endpoint доступен!',
+                        next_step: 'Если endpoint доступен, но бот не отвечает, проблема в настройке webhook в Telegram'
+                    }, 'Тест доступности webhook');
+                } else {
+                    showError('Webhook endpoint недоступен: ' + response.status);
+                }
             } catch (error) {
-                showError('Ошибка: ' + error.message);
+                showError('Ошибка при тестировании доступности: ' + error.message);
+            }
+        }
+
+        async function testWebhookExternal() {
+            showLoading('Выполняем внешний тест webhook (отправляем POST запрос)...');
+            try {
+                const response = await fetch('/telegram/test-webhook-external');
+                const data = await response.json();
+                showResults(data, 'Результат внешнего тестирования webhook');
+            } catch (error) {
+                showError('Ошибка при внешнем тестировании: ' + error.message);
             }
         }
 

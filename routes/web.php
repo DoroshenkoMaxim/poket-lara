@@ -36,10 +36,18 @@ Route::post('/logout', function () {
 
 // Telegram Bot маршруты
 Route::post('/telegram/webhook', [TelegramBotController::class, 'webhook'])->name('telegram.webhook');
+Route::get('/telegram/webhook-test', function() {
+    return response()->json([
+        'status' => 'webhook endpoint is accessible',
+        'timestamp' => now(),
+        'server' => request()->server(),
+    ]);
+})->name('telegram.webhook-test');
 Route::get('/telegram/setup', [TelegramBotController::class, 'setWebhook'])->name('telegram.setup');
 Route::get('/telegram/reinstall', [TelegramBotController::class, 'reinstallWebhook'])->name('telegram.reinstall');
 Route::get('/telegram/clean-setup', [TelegramBotController::class, 'cleanAndSetupWebhook'])->name('telegram.clean-setup');
 Route::get('/telegram/test-webhook', [TelegramBotController::class, 'testWebhook'])->name('telegram.test-webhook');
+Route::get('/telegram/test-webhook-external', [TelegramBotController::class, 'checkWebhookExternal'])->name('telegram.test-webhook-external');
 Route::get('/telegram/info', [TelegramBotController::class, 'getBotInfo'])->name('telegram.info');
 Route::get('/telegram/diagnostics', function () {
     return view('telegram.diagnostics');

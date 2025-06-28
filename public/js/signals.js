@@ -273,7 +273,7 @@ class AdvancedSignalGenerator {
 
         // Направление с анимацией
         directionIcon.className = `direction-icon ${signal.direction.toLowerCase()}`;
-        directionIcon.querySelector('i').className = `fas fa-arrow-${signal.direction === 'CALL' ? 'up' : 'down'}`;
+        directionIcon.querySelector('i').className = `fas fa-arrow-${signal.direction === 'ВВЕРХ' ? 'up' : 'down'}`;
         directionText.textContent = signal.direction;
 
         // Информация с анимацией появления

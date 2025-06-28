@@ -18,7 +18,7 @@
                     <!-- Фильтры -->
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-outline-primary btn-lg w-100 filter-btn" 
+                            <button type="button" class="btn btn-outline-primary btn-lg  px-5 py-3 me-3 filter-btn" 
                                     data-bs-toggle="modal" data-bs-target="#currencyModal" id="currencyBtn">
                                 <i class="fas fa-coins"></i>
                                 <span class="filter-title">Валюты</span>

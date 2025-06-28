@@ -68,7 +68,7 @@
                                 <div class="card-body text-center">
                                     <i class="fas fa-clock fa-2x mb-2"></i>
                                     <h6>Обновлено</h6>
-                                    <h4>5 мин</h4>
+                                    <h4>1 мин</h4>
                                 </div>
                             </div>
                         </div>

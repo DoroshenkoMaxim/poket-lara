@@ -22,6 +22,7 @@ use App\Http\Controllers\SignalsController;
 
 // Главная страница - сигналы
 Route::get('/', [SignalsController::class, 'show'])->name('home');
+Route::get('/signals', [SignalsController::class, 'show'])->name('signals');
 
 // Telegram авторизация
 Route::get('/login', [TelegramAuthController::class, 'showLoginForm'])->name('login');

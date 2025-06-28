@@ -391,12 +391,12 @@
         font-size: 2.5rem;
     }
 
-    .direction-icon.call {
+    .direction-icon.вверх {
         background: rgba(0,200,81,0.3);
         color: #00c851;
     }
 
-    .direction-icon.put {
+    .direction-icon.вниз {
         background: rgba(255,61,0,0.3);
         color: #ff3d00;
     }

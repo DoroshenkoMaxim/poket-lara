@@ -1,0 +1,2 @@
+# Fallback Notifications Queue Log
+# Format: YYYY-MM-DD HH:MM:SS - ACTION to TELEGRAM_ID - ID: NOTIFICATION_ID 

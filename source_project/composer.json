@@ -1,0 +1,17 @@
+{
+    "name": "poket/affiliate-system",
+    "description": "Affiliate system for PocketPartners integration",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+} 

@@ -1,0 +1,2 @@
+# Самый простой .htaccess
+RewriteEngine On 

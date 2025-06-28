@@ -1,0 +1,2 @@
+# Telegram Bot Messages Log
+# Format: {"timestamp":"YYYY-MM-DD HH:MM:SS","user_id":123456,"chat_id":123456,"text":"message","username":"username","first_name":"name"} 

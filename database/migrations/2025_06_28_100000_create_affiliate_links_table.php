@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('affiliate_links', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique()->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable();
-            $table->rememberToken();
+            $table->string('click_id')->unique();
+            $table->bigInteger('telegram_id');
             $table->timestamps();
+            
+            $table->index(['telegram_id']);
+            $table->index(['click_id']);
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('affiliate_links');
     }
-};
+}; 

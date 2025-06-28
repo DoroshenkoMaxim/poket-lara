@@ -1,0 +1,2 @@
+# PocketOption Postbacks Log
+# Format: {"method":"GET","headers":{...},"get":{...},"post":{...},"query_string":"...","timestamp":"YYYY-MM-DD HH:MM:SS"} 

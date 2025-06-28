@@ -250,7 +250,7 @@ class AdvancedSignalGenerator {
             // Обычная логика
             currency = this.selectedCurrency || this.currencies[Math.floor(Math.random() * this.currencies.length)];
             timeframe = this.selectedTimeframe || this.timeframes[Math.floor(Math.random() * this.timeframes.length)];
-            direction = Math.random() > 0.5 ? 'CALL' : 'PUT';
+            direction = Math.random() > 0.5 ? 'ВВЕРХ' : 'ВНИЗ';
         }
 
         return {

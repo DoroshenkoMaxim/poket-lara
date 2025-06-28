@@ -109,7 +109,7 @@ class SignalsController extends Controller
             // Обычная логика
             $currency = $selectedCurrency ?: $currencies[array_rand($currencies)];
             $timeframe = $selectedTimeframe ?: $timeframes[array_rand($timeframes)];
-            $direction = rand(0, 1) ? 'CALL' : 'PUT';
+            $direction = rand(0, 1) ? 'ВВЕРХ' : 'ВНИЗ';
         }
 
         $signal = [

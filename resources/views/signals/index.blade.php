@@ -305,9 +305,10 @@
     }
 
     #findSignalBtn:disabled {
-        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+        background: linear-gradient(135deg, #00c851 0%, #00a040 100%) !important;
         color: white !important;
-        opacity: 0.8;
+        opacity: 0.7;
+        cursor: not-allowed;
     }
 
     #clearFiltersBtn {
@@ -572,6 +573,7 @@
             this.selectedCurrency = null;
             this.selectedTimeframe = null;
             this.lastSignal = null;
+            this.isSearching = false; // Добавляем флаг для предотвращения множественных запросов
             this.init();
         }
 
@@ -638,16 +640,25 @@
         }
 
         async findSignal() {
+            // Предотвратить множественные запросы
+            if (this.isSearching) {
+                return;
+            }
+            
             const findBtn = document.getElementById('findSignalBtn');
             const loadingAnimation = document.getElementById('loadingAnimation');
             const signalResult = document.getElementById('signalResult');
 
+            // Установить флаг поиска
+            this.isSearching = true;
+            
             // Очистить предыдущий сигнал
             this.lastSignal = null;
 
             // Показать загрузку
             findBtn.disabled = true;
             findBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span class="btn-text">Поиск сигнала...</span>';
+            findBtn.style.display = 'inline-block'; // Убедиться что кнопка видна
             signalResult.classList.add('d-none');
             loadingAnimation.classList.remove('d-none');
             
@@ -683,6 +694,16 @@
                 findBtn.style.display = 'inline-block';
                 findBtn.disabled = false;
                 findBtn.innerHTML = '<i class="fas fa-search"></i> <span class="btn-text">Найти сигнал</span>';
+                
+                // Принудительно убрать фокус с кнопки
+                findBtn.blur();
+                
+                // Сбросить все классы состояний
+                findBtn.classList.remove('active', 'focus');
+                findBtn.removeAttribute('data-bs-toggle');
+                
+                // Сбросить флаг поиска
+                this.isSearching = false;
             }, 3000);
         }
 
@@ -713,32 +734,56 @@
             
             return new Promise(resolve => {
                 let elapsed = 0;
+                const intervalTime = 50; // Уменьшаем интервал для более плавной анимации
+                
                 const interval = setInterval(() => {
-                    elapsed += 100;
-                    const progress = (elapsed / duration) * 100;
+                    elapsed += intervalTime;
+                    const progress = Math.min((elapsed / duration) * 100, 100);
                     
-                    if (progressBar) {
+                    if (progressBar && progressBar.parentElement) {
                         progressBar.style.width = progress + '%';
+                        // Добавляем transition для плавности
+                        progressBar.style.transition = 'width 0.05s ease-out';
                     }
                     
-                    if (countdown) {
-                        const remaining = Math.ceil((duration - elapsed) / 1000);
+                    if (countdown && countdown.parentElement) {
+                        const remaining = Math.max(Math.ceil((duration - elapsed) / 1000), 0);
                         countdown.textContent = `${remaining}s`;
                     }
                     
                     if (elapsed >= duration) {
                         clearInterval(interval);
-                        if (progressBar) progressBar.parentElement.remove();
-                        if (countdown) countdown.remove();
+                        
+                        // Убедиться что прогресс-бар заполнен до 100%
+                        if (progressBar && progressBar.parentElement) {
+                            progressBar.style.width = '100%';
+                        }
+                        
+                        // Удалить элементы через небольшую задержку
+                        setTimeout(() => {
+                            if (progressBar && progressBar.parentElement) {
+                                progressBar.parentElement.remove();
+                            }
+                            if (countdown && countdown.parentElement) {
+                                countdown.remove();
+                            }
+                        }, 100);
+                        
                         resolve();
                     }
-                }, 100);
+                }, intervalTime);
             });
         }
 
         createProgressBar() {
             const signalCard = document.querySelector('.signal-card');
             if (!signalCard) return null;
+
+            // Удалить существующий прогресс-бар если есть
+            const existingProgress = signalCard.querySelector('.progress-container');
+            if (existingProgress) {
+                existingProgress.remove();
+            }
 
             const progressContainer = document.createElement('div');
             progressContainer.className = 'progress-container';
@@ -751,6 +796,7 @@
                 background: rgba(255,255,255,0.2);
                 border-radius: 0 0 25px 25px;
                 overflow: hidden;
+                z-index: 10;
             `;
 
             const progressBar = document.createElement('div');
@@ -760,6 +806,9 @@
                 width: 0%;
                 background: linear-gradient(90deg, #00c851, #00ff66);
                 box-shadow: 0 0 10px rgba(0,255,102,0.5);
+                transition: width 0.1s ease-out;
+                border-radius: 0 0 25px 25px;
+                transform: translateZ(0);
             `;
 
             progressContainer.appendChild(progressBar);
@@ -771,6 +820,12 @@
         createCountdown(duration) {
             const signalCard = document.querySelector('.signal-card');
             if (!signalCard) return null;
+
+            // Удалить существующий счетчик если есть
+            const existingCountdown = signalCard.querySelector('.countdown');
+            if (existingCountdown) {
+                existingCountdown.remove();
+            }
 
             const countdown = document.createElement('div');
             countdown.className = 'countdown';
@@ -786,6 +841,8 @@
                 font-size: 0.9rem;
                 backdrop-filter: blur(5px);
                 border: 1px solid rgba(255,255,255,0.2);
+                z-index: 10;
+                user-select: none;
             `;
 
             signalCard.appendChild(countdown);

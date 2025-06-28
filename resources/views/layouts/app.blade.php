@@ -19,53 +19,7 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ asset('css/signals.css') }}">
 
-    <!-- Navbar Dropdown Fix -->
-    <style>
-        /* Убедиться что navbar dropdown работает корректно */
-        .navbar .dropdown-menu {
-            position: absolute !important;
-            z-index: 9999 !important;
-            display: none;
-            transition: all 0.15s ease-in-out !important;
-            transform: none !important;
-            animation: none !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-        
-        .navbar .dropdown-menu.show {
-            display: block !important;
-        }
-        
-        .navbar .dropdown-toggle {
-            transition: none !important;
-            transform: none !important;
-            cursor: pointer !important;
-        }
-        
-        .navbar .dropdown-toggle:hover,
-        .navbar .dropdown-toggle:focus,
-        .navbar .dropdown-toggle:active {
-            text-decoration: none !important;
-            color: rgba(0,0,0,.9) !important;
-        }
-        
-        .navbar .dropdown-item {
-            transition: all 0.15s ease-in-out !important;
-            transform: none !important;
-        }
-        
-        .navbar .dropdown-item:hover {
-            background-color: #f8f9fa !important;
-        }
-        
-        /* Убедиться что контейнер navbar не имеет overflow hidden */
-        .navbar,
-        .navbar-collapse,
-        .navbar-nav {
-            overflow: visible !important;
-        }
-    </style>
+
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -101,22 +55,20 @@
                                 </a>
                             </li>
                         @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                            <li class="nav-item">
+                                <span class="navbar-text me-3">
+                                    Привет, {{ Auth::user()->name }}!
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-outline-danger btn-sm" href="{{ route('logout') }}"
+                                   onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
                                 </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
                             </li>
                         @endguest
                     </ul>
